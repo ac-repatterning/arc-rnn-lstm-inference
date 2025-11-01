@@ -38,7 +38,7 @@ class Limits:
 
         return limits
 
-    def exc(self):
+    def exc(self) -> list:
         """
 
         :return:
@@ -46,7 +46,6 @@ class Limits:
 
         # The years in focus, via the year start date, e.g., 2023-01-01
         limits = self.__limits()
-        logging.info(limits)
+        __limits = limits['date'].dt.strftime('%Y-%m-%d').to_list()
 
-
-        return limits
+        return __limits
