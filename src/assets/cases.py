@@ -1,0 +1,95 @@
+"""Module cases.py"""
+import os
+
+import numpy as np
+import pandas as pd
+
+import config
+import src.elements.s3_parameters as s3p
+import src.elements.service as sr
+import src.s3.prefix
+
+
+class Cases:
+    """
+    Retrieves the catchment & time series codes of the gauges in focus.
+    """
+
+    def __init__(self, service: sr.Service, s3_parameters: s3p.S3Parameters):
+        """
+
+        :param service:
+        :param s3_parameters:
+        """
+
+        self.__service = service
+        self.__s3_parameters = s3_parameters
+
+        # Configurations
+        self.__configurations = config.Config()
+
+        # An instance for interacting with objects within an Amazon S3 prefix
+        self.__pre = src.s3.prefix.Prefix(service=self.__service,
+                                          bucket_name=self.__s3_parameters.internal)
+
+    @staticmethod
+    def __get_elements(objects: list[str]) -> pd.DataFrame:
+        """
+
+        :param objects:
+        :return:
+        """
+
+        # A set of S3 uniform resource locators
+        values = pd.DataFrame(data={'uri': objects})
+        values = values.assign(uri=values['uri'].apply(os.path.dirname))
+        values.drop_duplicates(inplace=True, ignore_index=True)
+
+        # Splitting locators
+        rename = {0: 'endpoint', 1: 'catchment_id', 2: 'ts_id'}
+        splittings = values['uri'].str.rsplit('/', n=2, expand=True)
+        splittings.rename(columns=rename, inplace=True)
+
+        # Collating
+        values = values.copy().join(splittings, how='left')
+        values.drop(columns='endpoint', inplace=True)
+
+        return values
+
+    def __get_keys(self) -> list[str]:
+        """
+
+        :return:
+        """
+
+        paths = self.__pre.objects(prefix=self.__configurations.artefacts_, delimiter='/')
+
+        computations = []
+        for path in paths:
+            listings = self.__pre.objects(prefix=path, delimiter='')
+            computations.append(listings)
+        keys: list[str] = sum(computations, [])
+
+        return keys
+
+    def exc(self) -> pd.DataFrame:
+        """
+
+        :return:
+        """
+
+        keys = self.__get_keys()
+        if len(keys) > 0:
+            objects = [f's3://{self.__s3_parameters.internal}/{key}' for key in keys]
+        else:
+            return pd.DataFrame()
+
+        # The variable objects is a list of uniform resource locators.  Each locator includes a 'ts_id',
+        # 'catchment_id', 'datestr' substring; the function __get_elements extracts these items.
+        values = self.__get_elements(objects=objects)
+
+        # Types
+        values['catchment_id'] = values['catchment_id'].astype(dtype=np.int64)
+        values['ts_id'] = values['ts_id'].astype(dtype=np.int64)
+
+        return values
