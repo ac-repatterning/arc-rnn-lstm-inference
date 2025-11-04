@@ -1,13 +1,16 @@
-
-import tensorflow as tf
-import pandas as pd
+"""Module forecast.py"""
 import numpy as np
+import pandas as pd
+import tensorflow as tf
 
-import src.elements.master as mr
 import src.elements.attribute as atr
+import src.elements.master as mr
 
 
 class Forecast:
+    """
+    Under Development
+    """
 
     def __init__(self, arguments: dict, attribute: atr.Attribute):
         """
@@ -44,7 +47,7 @@ class Forecast:
 
     def exc(self, model: tf.keras.models.Sequential, master: mr.Master):
         """
-        
+
         :param model:
         :param master:
         :return:
