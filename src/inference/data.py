@@ -10,20 +10,14 @@ class Data:
     Data
     """
 
-    def __init__(self, modelling: dict):
+    def __init__(self):
         """
-
-        :param modelling: A set of modelling stage arguments
+        Constructor
         """
 
         # Focus
         self.__dtype = {'timestamp': np.float64, 'ts_id': np.float64, 'measure': float}
 
-        # seconds, milliseconds
-        # as_from: datetime.datetime = (datetime.datetime.now()
-        #                               - datetime.timedelta(days=round(arguments.get('spanning')*365)))
-        # self.__as_from = as_from.timestamp() * 1000
-        self.__as_from = modelling.get('training_starts').get('epoch_milliseconds')
 
     def __get_data(self, listing: list[str]):
         """
@@ -58,12 +52,13 @@ class Data:
 
         return data
 
-    def exc(self, listing: list[str]) -> pd.DataFrame:
+    def exc(self, listing: list[str], modelling: dict) -> pd.DataFrame:
         """
         Append a date of the format datetime64[]
         data['date'] = pd.to_datetime(data['timestamp'], unit='ms')
 
         :param listing:
+        :param modelling: A set of modelling stage arguments
         :return:
         """
 
@@ -72,6 +67,7 @@ class Data:
         data = self.__set_missing(data=data.copy())
 
         # Filter
-        data = data.copy().loc[data['timestamp'] >= self.__as_from, :]
+        __as_from = modelling.get('training_starts').get('epoch_milliseconds')
+        data = data.copy().loc[data['timestamp'] >= __as_from, :]
 
         return data
