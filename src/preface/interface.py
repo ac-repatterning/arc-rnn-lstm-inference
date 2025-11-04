@@ -24,6 +24,25 @@ class Interface:
 
         self.__configurations = config.Config()
 
+    @staticmethod
+    def __set_source(arguments: dict, s3_parameters: s3p.S3Parameters) -> dict:
+        """
+
+        :param arguments:
+        :param s3_parameters:
+        :return:
+        """
+
+        objects = s3_parameters._asdict()
+        bucket = objects[arguments.get('s3').get('p_bucket')]
+        prefix = objects[arguments.get('s3').get('p_prefix')]
+
+        source = f's3://{bucket}/{prefix}{arguments.get('s3').get('affix')}'
+
+        arguments['additions'] = {'modelling_data_source': source}
+
+        return arguments
+
     def __get_arguments(self, connector: boto3.session.Session) -> dict:
         """
 
@@ -45,14 +64,16 @@ class Interface:
 
         connector = boto3.session.Session()
 
-        # Arguments
-        arguments: dict = self.__get_arguments(connector=connector)
-
         # Interaction Instances: Amazon
         s3_parameters: s3p.S3Parameters = src.s3.s3_parameters.S3Parameters(connector=connector,).exc()
         service: sr.Service = src.functions.service.Service(
             connector=connector, region_name=s3_parameters.region_name).exc()
 
+        # Arguments
+        arguments: dict = self.__get_arguments(connector=connector)
+        arguments: dict = self.__set_source(arguments=arguments.copy(), s3_parameters=s3_parameters)
+
+        # Codes
         if codes is not None:
             arguments['series']['excerpt'] = codes
 
