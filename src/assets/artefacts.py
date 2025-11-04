@@ -1,13 +1,15 @@
 """Module artefacts.py"""
 import logging
-import dask
 import os
 
+import dask
+
 import config
-import src.elements.specification as sc
 import src.elements.s3_parameters as s3p
+import src.elements.specification as sc
 import src.functions.directories
 import src.s3.directives
+
 
 class Artefacts:
     """
@@ -17,7 +19,8 @@ class Artefacts:
     def __init__(self, s3_parameters: s3p.S3Parameters):
         """
 
-        :param s3_parameters:
+        :param s3_parameters: The overarching S3 parameters settings of this project, e.g., region code
+                              name, buckets, etc.
         """
 
         self.__s3_parameters = s3_parameters
@@ -30,7 +33,7 @@ class Artefacts:
     def __acquire(self, specification: sc.Specification):
         """
 
-        :param specification:
+        :param specification: Refer to src.elements.specification.py
         :return:
         """
 
@@ -45,7 +48,7 @@ class Artefacts:
     def exc(self, specifications: list[sc.Specification]):
         """
 
-        :param specifications:
+        :param specifications: A list items of type Specification; refer to src.elements.specification.py
         :return:
         """
 
