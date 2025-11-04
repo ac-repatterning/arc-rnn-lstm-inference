@@ -1,10 +1,11 @@
 """Module inference/attributes.py"""
 import logging
-import boto3
-import json
+import os
 
+import config
 import src.elements.attribute as atr
 import src.elements.specification as sc
+import src.functions.objects
 import src.s3.unload
 
 
@@ -13,44 +14,36 @@ class Attributes:
     Attributes
     """
 
-    def __init__(self, connector: boto3.session.Session):
+    def __init__(self):
+        """
+        Constructor
         """
 
-        :param connector: An instance of boto3.session.Session
+        # Instances
+        self.__configurations = config.Config()
+        self.__objects = src.functions.objects.Objects()
+
+    def __get_request(self, uri: str) -> dict | list[dict]:
         """
 
-        # Instances for S3 interactions
-        s3_client: boto3.session.Session.client = connector.client(
-            service_name='s3')
-        self.__unload = src.s3.unload.Unload(s3_client=s3_client)
-
-    def __get_data(self, bucket_name: str, key_name: str) -> dict:
-        """
-
-        :param bucket_name:
-        :param key_name:
+        :param uri: A file's uniform resource identifier.
         :return:
         """
 
-        buffer = self.__unload.exc(bucket_name=bucket_name, key_name=key_name)
-
-        return json.loads(buffer)
+        return self.__objects.read(uri=uri)
 
     def exc(self, specification: sc.Specification) -> atr.Attribute:
         """
 
-        :param specification:
+        :param specification: Refer to src.elements.specification.py
         :return:
         """
 
-        string = specification.uri.replace('s3://', '')
-        parts = string.split(sep='/', maxsplit=1)
-        bucket_name = parts[0]
-        prefix = parts[1]
+        path = os.path.join(self.__configurations.data_, str(specification.catchment_id), str(specification.ts_id))
 
         attribute = atr.Attribute(
-            modelling=self.__get_data(bucket_name=bucket_name, key_name=f'{prefix}/modelling.json'),
-            scaling=self.__get_data(bucket_name=bucket_name, key_name=f'{prefix}/scaling.json'))
+            modelling=self.__get_request(uri=os.path.join(path, 'modelling.json')),
+            scaling=self.__get_request(uri=os.path.join(path, 'scaling.json')))
 
         logging.info(attribute.modelling)
         logging.info(attribute.scaling)
