@@ -7,8 +7,11 @@ import pandas as pd
 
 import src.elements.attribute as atr
 import src.elements.specification as sc
+
+import src.elements.master as mr
 import src.inference.attributes
 import src.inference.data
+import src.inference.scaling
 
 
 class Interface:
@@ -30,6 +33,7 @@ class Interface:
 
         # Setting up
         self.__endpoint: str = self.__arguments.get('additions').get('modelling_data_source')
+        self.__scaling = src.inference.scaling.Scaling()
 
     @dask.delayed
     def __get_listing(self, specification: sc.Specification) -> list[str]:
@@ -44,6 +48,19 @@ class Interface:
 
         return listing
 
+    @dask.delayed
+    def __set_transforms(self, data: pd.DataFrame, scaling: dict) -> mr.Master:
+        """
+
+        :param data:
+        :param scaling:
+        :return:
+        """
+
+        transforms = self.__scaling.transform(data=data, scaling=scaling)
+
+        return mr.Master(data=data, transforms=transforms)
+
     def exc(self, specifications: list[sc.Specification]):
         """
 
@@ -51,7 +68,7 @@ class Interface:
         :return:
         """
 
-        __get_attributes = dask.delayed(src.inference.attributes.Attributes(connector=self.__connector).exc)
+        __get_attributes = dask.delayed(src.inference.attributes.Attributes().exc)
         __get_data = dask.delayed(src.inference.data.Data().exc)
 
         computations = []
@@ -59,7 +76,8 @@ class Interface:
             attribute: atr.Attribute = __get_attributes(specification=specification)
             listing: list[str] = self.__get_listing(specification=specification)
             data: pd.DataFrame = __get_data(listing=listing, modelling=attribute.modelling)
-            computations.append(data.shape[0])
+            master: mr.Master = self.__set_transforms(data=data, scaling=attribute.scaling)
+            computations.append(master.transforms.head())
 
         calculations = dask.compute(computations, scheduler='threads')[0]
         logging.info(calculations)
