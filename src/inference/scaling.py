@@ -25,8 +25,8 @@ class Scaling:
         """
 
         frame = data.copy()
-        values = frame[scaling.get('feature_names_in')].values
+        values = frame[scaling.get('feature_names_in_')].values
         matrix = np.true_divide(values - scaling.get('data_min_'), scaling.get('data_range_'))
-        frame.loc[:, scaling.get('feature_names_in')] = matrix
+        frame.loc[:, scaling.get('feature_names_in_')] = matrix
 
         return frame
