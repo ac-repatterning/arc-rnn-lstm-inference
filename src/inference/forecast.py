@@ -47,6 +47,7 @@ class Forecast:
 
         return future
 
+    # pylint: disable=E1101
     def __forecasting(self, model: tf.keras.models.Sequential, past: pd.DataFrame, f_structure: pd.DataFrame) -> pd.DataFrame:
         """
 
@@ -84,6 +85,7 @@ class Forecast:
 
         return frame.rename(columns=self.__rename, inplace=True)
 
+    # pylint: disable=E1101
     def exc(self, model: tf.keras.models.Sequential, master: mr.Master) -> pd.DataFrame:
         """
 
