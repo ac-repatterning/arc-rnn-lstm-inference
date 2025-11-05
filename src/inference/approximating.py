@@ -5,7 +5,11 @@ import os
 import tensorflow as tf
 
 import config
+import src.elements.attribute as atr
+import src.elements.master as mr
 import src.elements.specification as sc
+import src.inference.estimate
+import src.inference.forecast
 
 
 class Approximating:
@@ -24,26 +28,32 @@ class Approximating:
         # Instances
         self.__configurations = config.Config()
 
-    @staticmethod
-    def __get_model(path: str) -> tf.keras.models.Sequential:
+    def __get_model(self, specification: sc.Specification) -> tf.keras.models.Sequential:
         """
 
         :param path:
         :return:
         """
 
+        path = os.path.join(self.__configurations.data_, str(specification.catchment_id), str(specification.ts_id))
+
         return tf.keras.models.load_model(
             filepath=os.path.join(path, 'model.keras'))
 
-    def exc(self, specification: sc.Specification):
+    def exc(self, specification: sc.Specification, attribute: atr.Attribute, master: mr.Master):
         """
 
         :param specification:
+        :param attribute:
+        :param master:
         :return:
         """
 
-        logging.info(self.__arguments)
+        # Read-in the gauge's model
+        model = self.__get_model(specification=specification)
 
-        path = os.path.join(self.__configurations.data_, str(specification.catchment_id), str(specification.ts_id))
-        model = self.__get_model(path=path)
-        logging.info(model)
+        # Subsequently, estimate w.r.t. to the known, and forecast w.r.t. the unknown.
+        estimates = src.inference.estimate.Estimate(attribute=attribute).exc(model=model, master=master)
+        forecasts = src.inference.forecast.Forecast(attribute=attribute).exc(model=model, master=master)
+        logging.info(estimates)
+        logging.info(forecasts)
