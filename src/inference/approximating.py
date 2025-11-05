@@ -17,13 +17,10 @@ class Approximating:
     Under Development
     """
 
-    def __init__(self, arguments: dict):
+    def __init__(self):
         """
-
-        :param arguments:
+        Constructor
         """
-
-        self.__arguments = arguments
 
         # Instances
         self.__configurations = config.Config()
@@ -57,3 +54,5 @@ class Approximating:
         forecasts = src.inference.forecast.Forecast(attribute=attribute).exc(model=model, master=master)
         logging.info(estimates)
         logging.info(forecasts)
+
+        return [estimates.shape[0], forecasts.shape[0]]
