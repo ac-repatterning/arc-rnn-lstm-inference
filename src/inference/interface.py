@@ -1,14 +1,12 @@
 """Module inference/interface.py"""
 import logging
 
-import boto3
 import dask
 import pandas as pd
 
 import src.elements.attribute as atr
-import src.elements.specification as sc
-
 import src.elements.master as mr
+import src.elements.specification as sc
 import src.inference.attributes
 import src.inference.data
 import src.inference.scaling
@@ -19,15 +17,13 @@ class Interface:
     Interface
     """
 
-    def __init__(self, connector: boto3.session.Session, arguments: dict, limits: list):
+    def __init__(self, arguments: dict, limits: list):
         """
 
-        :param connector:
         :param arguments:
         :param limits:
         """
 
-        self.__connector = connector
         self.__arguments = arguments
         self.__limits = limits
 
