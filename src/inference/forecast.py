@@ -13,19 +13,17 @@ class Forecast:
     Under Development
     """
 
-    def __init__(self, arguments: dict, attribute: atr.Attribute):
+    def __init__(self, attribute: atr.Attribute):
         """
 
-        :param arguments:
         :param attribute:
         """
 
         self.__modelling = attribute.modelling
         self.__scaling = attribute.scaling
-        self.__arguments = arguments
+        self.__n_points_future = attribute.n_points_future
 
-        # ...
-        self.__n_points_future = self.__arguments.get('n_points_future')
+        # And
         self.__n_sequence = self.__modelling.get('n_sequence')
 
         # Renaming
