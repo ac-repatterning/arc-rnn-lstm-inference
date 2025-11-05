@@ -19,13 +19,13 @@ class Forecast:
         :param attribute:
         """
 
-
-        self.__attribute = attribute
+        self.__modelling = attribute.modelling
+        self.__scaling = attribute.scaling
         self.__arguments = arguments
 
         # ...
         self.__n_points_future = self.__arguments.get('n_points_future')
-        self.__cutoff = self.__arguments.get('n_points_future') + self.__attribute.modelling.get('n_sequence')
+        self.__n_sequence = self.__modelling.get('n_sequence')
 
     def __get_structure(self, frame: pd.DataFrame) -> pd.DataFrame:
         """
@@ -36,14 +36,30 @@ class Forecast:
 
         dates = pd.date_range(start=frame['date'].max(), periods=self.__n_points_future+1, freq='h', inclusive='right')
         timestamps = (dates.astype(np.int64) / (10 ** 6)).astype(np.longlong)
-        tail = pd.DataFrame(data={'timestamp': timestamps, 'date': dates})
+        future = pd.DataFrame(data={'timestamp': timestamps, 'date': dates})
 
-        for i in self.__attribute.modelling.get('targets'):
-            tail.loc[:, i] = np.nan
+        for i in self.__modelling.get('targets'):
+            future.loc[:, i] = np.nan
 
-        __structure = pd.concat([frame.copy(), tail], axis=0, ignore_index=True)
+        return future
 
-        return __structure.copy()[-self.__cutoff:]
+    def __forecasting(self, model: tf.keras.models.Sequential, past: pd.DataFrame, future: pd.DataFrame):
+
+        # History
+        initial = past[self.__modelling.get('fields')].values[None, :]
+        history = initial.copy()
+
+        # The forecasts template
+        template = future.copy()
+
+        # Hence
+        for i in range(self.__n_points_future):
+            values = model.predict(x=history[:, -self.__n_sequence:, :], verbose=0)
+            template.loc[i, self.__modelling.get('targets')] = values
+            affix = template.loc[i, self.__modelling.get('fields')].values.astype(float)
+            history = np.concatenate((history, affix[None, None, :]), axis=1)
+
+        return template.copy()
 
     def exc(self, model: tf.keras.models.Sequential, master: mr.Master):
         """
@@ -54,4 +70,7 @@ class Forecast:
         """
 
         frame = master.transforms
-        structure = self.__get_structure(frame=frame)
+
+        past = frame.copy()[-self.__n_sequence:]
+        future = self.__get_structure(frame=frame)
+        self.__forecasting(model=model, past=past, future=future)
