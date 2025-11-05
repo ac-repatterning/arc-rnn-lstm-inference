@@ -43,14 +43,14 @@ class Forecast:
 
         return future
 
-    def __forecasting(self, model: tf.keras.models.Sequential, past: pd.DataFrame, future: pd.DataFrame):
+    def __forecasting(self, model: tf.keras.models.Sequential, past: pd.DataFrame, f_structure: pd.DataFrame):
 
         # History
         initial = past[self.__modelling.get('fields')].values[None, :]
         history = initial.copy()
 
         # The forecasts template
-        template = future.copy()
+        template = f_structure.copy()
 
         # Hence
         for i in range(self.__n_points_future):
@@ -72,9 +72,9 @@ class Forecast:
         # The frame that has the scaled fields
         frame = master.transforms
 
-        # Predicting future values requires (a) past values, and (b) a template that stores fure values
+        # Predicting future values requires (a) past values, and (b) a structure for future values
         past = frame.copy()[-self.__n_sequence:]
-        future = self.__get_structure(frame=frame)
+        f_structure = self.__get_structure(frame=frame)
 
         # Forecasting
-        self.__forecasting(model=model, past=past, future=future)
+        __future = self.__forecasting(model=model, past=past, f_structure=f_structure)
