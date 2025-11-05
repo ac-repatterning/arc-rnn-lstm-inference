@@ -42,6 +42,8 @@ class Approximating:
         :return:
         """
 
+        logging.info(self.__arguments)
+
         path = os.path.join(self.__configurations.data_, str(specification.catchment_id), str(specification.ts_id))
         model = self.__get_model(path=path)
         logging.info(model)
