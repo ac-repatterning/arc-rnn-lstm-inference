@@ -14,10 +14,13 @@ class Attributes:
     Attributes
     """
 
-    def __init__(self):
+    def __init__(self, arguments: dict):
         """
-        Constructor
+
+        :param arguments:
         """
+
+        self.__arguments = arguments
 
         # Instances
         self.__configurations = config.Config()
@@ -43,9 +46,11 @@ class Attributes:
 
         attribute = atr.Attribute(
             modelling=self.__get_request(uri=os.path.join(path, 'modelling.json')),
-            scaling=self.__get_request(uri=os.path.join(path, 'scaling.json')))
+            scaling=self.__get_request(uri=os.path.join(path, 'scaling.json')),
+            n_points_future=self.__arguments.get('n_points_future'))
 
         logging.info(attribute.modelling)
         logging.info(attribute.scaling)
+        logging.info(attribute.n_points_future)
 
         return attribute
