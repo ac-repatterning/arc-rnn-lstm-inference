@@ -69,8 +69,12 @@ class Forecast:
         :return:
         """
 
+        # The frame that has the scaled fields
         frame = master.transforms
 
+        # Predicting future values requires (a) past values, and (b) a template that stores fure values
         past = frame.copy()[-self.__n_sequence:]
         future = self.__get_structure(frame=frame)
+
+        # Forecasting
         self.__forecasting(model=model, past=past, future=future)
