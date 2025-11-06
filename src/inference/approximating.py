@@ -37,7 +37,7 @@ class Approximating:
         return tf.keras.models.load_model(
             filepath=os.path.join(path, 'model.keras'))
 
-    def exc(self, specification: sc.Specification, attribute: atr.Attribute, master: mr.Master):
+    def exc(self, specification: sc.Specification, attribute: atr.Attribute, master: mr.Master) -> pd.DataFrame:
         """
 
         :param specification: Refer to src.elements.specification.py
@@ -52,4 +52,4 @@ class Approximating:
         forecasts: pd.DataFrame = src.inference.forecast.Forecast(attribute=attribute).exc(model=model, master=master)
         frame = pd.concat([estimates, forecasts], ignore_index=True, axis=0)
 
-        return frame.shape[0]
+        return frame
