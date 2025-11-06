@@ -5,10 +5,9 @@ import pandas as pd
 import tensorflow as tf
 
 import config
-
-import src.elements.specification as sc
 import src.elements.attribute as atr
 import src.elements.master as mr
+import src.elements.specification as sc
 import src.inference.estimate
 import src.inference.forecast
 
@@ -23,14 +22,12 @@ class Approximating:
         Constructor
         """
 
-        # Instances
         self.__configurations = config.Config()
 
     def __get_model(self, specification: sc.Specification):
         """
 
-
-        :param specification:
+        :param specification: Refer to src.elements.specification.py
         :return:
         """
 
@@ -41,6 +38,13 @@ class Approximating:
             filepath=os.path.join(path, 'model.keras'))
 
     def exc(self, specification: sc.Specification, attribute: atr.Attribute, master: mr.Master):
+        """
+
+        :param specification: Refer to src.elements.specification.py
+        :param attribute: Refer to src.elements.attribute.py
+        :param master: Refer to src.elements.master.py
+        :return:
+        """
 
         model = self.__get_model(specification=specification)
 
@@ -49,4 +53,3 @@ class Approximating:
         frame = pd.concat([estimates, forecasts], ignore_index=True, axis=0)
 
         return frame.shape[0]
-
