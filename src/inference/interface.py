@@ -1,16 +1,18 @@
 """Module inference/interface.py"""
 import logging
 
+import os
 import dask
 import pandas as pd
 
+import config
 import src.elements.attribute as atr
 import src.elements.master as mr
 import src.elements.specification as sc
+import src.inference.approximating
 import src.inference.attributes
 import src.inference.data
 import src.inference.scaling
-import src.inference.approximating
 
 
 class Interface:
@@ -29,6 +31,7 @@ class Interface:
         self.__limits = limits
 
         # Setting up
+        self.__configurations = config.Config()
         self.__endpoint: str = self.__arguments.get('additions').get('modelling_data_source')
         self.__scaling = src.inference.scaling.Scaling()
 
@@ -40,8 +43,11 @@ class Interface:
         :return:
         """
 
-        listing = [f'{self.__endpoint}/{specification.catchment_id}/{specification.ts_id}/{limit}.csv'
-                   for limit in self.__limits ]
+        listing  = [os.path.join(self.__configurations.data_, 'source', str(specification.catchment_id), str(specification.ts_id), f'{limit}.csv' )
+         for limit in self.__limits]
+
+        # listing = [f'{self.__endpoint}/{specification.catchment_id}/{specification.ts_id}/{limit}.csv'
+        #            for limit in self.__limits ]
 
         return listing
 
@@ -66,17 +72,16 @@ class Interface:
         """
 
         __get_attributes = dask.delayed(src.inference.attributes.Attributes(arguments=self.__arguments).exc)
-        __get_data = dask.delayed(src.inference.data.Data().exc)
+        __get_data = dask.delayed(src.inference.data.Data(limits=self.__limits).exc)
         __approximating = dask.delayed(src.inference.approximating.Approximating().exc)
 
         computations = []
         for specification in specifications:
             attribute: atr.Attribute = __get_attributes(specification=specification)
-            listing: list[str] = self.__get_listing(specification=specification)
-            data: pd.DataFrame = __get_data(listing=listing, modelling=attribute.modelling)
+            data: pd.DataFrame = __get_data(specification=specification, attribute=attribute)
             master: mr.Master = self.__set_transforms(data=data, scaling=attribute.scaling)
-            app = __approximating(specification=specification, attribute=attribute, master=master)
-            computations.append(app)
+            message = __approximating(specification=specification, attribute=attribute, master=master)
+            computations.append(message)
 
-        calculations = dask.compute(computations, scheduler='threads')[0]
-        logging.info(calculations)
+        messages = dask.compute(computations, scheduler='threads')[0]
+        logging.info(messages)
