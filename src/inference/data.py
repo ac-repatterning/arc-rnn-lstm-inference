@@ -1,8 +1,12 @@
 """Module data.py"""
-
+import os
 import dask.dataframe as ddf
 import numpy as np
 import pandas as pd
+
+import config
+import src.elements.attribute as atr
+import src.elements.specification as sc
 
 
 class Data:
@@ -10,10 +14,14 @@ class Data:
     Data
     """
 
-    def __init__(self):
+    def __init__(self, limits: list):
         """
         Constructor
         """
+
+        self.__limits = limits
+
+        self.__configurations = config.Config()
 
         # Focus
         self.__dtype = {'timestamp': np.float64, 'ts_id': np.float64, 'measure': float}
@@ -38,6 +46,22 @@ class Data:
 
         return block
 
+    def __get_listing(self, specification: sc.Specification) -> list[str]:
+        """
+
+        :param specification:
+        :return:
+        """
+
+        listing  = [os.path.join(self.__configurations.data_, 'source', str(specification.catchment_id),
+                                 str(specification.ts_id), f'{limit}.csv' )
+                    for limit in self.__limits]
+
+        # listing = [f'{self.__endpoint}/{specification.catchment_id}/{specification.ts_id}/{limit}.csv'
+        #            for limit in self.__limits ]
+
+        return listing
+
     @staticmethod
     def __set_missing(data: pd.DataFrame) -> pd.DataFrame:
         """
@@ -52,22 +76,27 @@ class Data:
 
         return data
 
-    def exc(self, listing: list[str], modelling: dict) -> pd.DataFrame:
+    def exc(self, specification: sc.Specification, attribute: atr.Attribute) -> pd.DataFrame:
         """
-        Append a date of the format datetime64[]
-        data['date'] = pd.to_datetime(data['timestamp'], unit='ms')
+        __as_from = attribute.modelling.get('training_starts').get('epoch_milliseconds')
+        data = data.copy().loc[data['timestamp'] >= __as_from, :]
 
-        :param listing:
-        :param modelling: A set of modelling stage arguments
+        :param specification:
+        :param attribute:
         :return:
         """
+
+        listing =  self.__get_listing(specification=specification)
 
         # The data
         data = self.__get_data(listing=listing)
         data = self.__set_missing(data=data.copy())
 
         # Filter
-        __as_from = modelling.get('training_starts').get('epoch_milliseconds')
-        data = data.copy().loc[data['timestamp'] >= __as_from, :]
+        n_samples_seen_ = attribute.scaling.get('n_samples_seen_')
+        data = data.copy().loc[-n_samples_seen_:, :]
+
+        # datetime
+        data['date'] = pd.to_datetime(data['timestamp'], unit='ms')
 
         return data
