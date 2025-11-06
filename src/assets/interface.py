@@ -10,6 +10,7 @@ import src.elements.s3_parameters as s3p
 import src.elements.service as sr
 import src.elements.specification as sc
 import src.assets.artefacts
+import src.assets.source
 
 
 class Interface:
@@ -30,9 +31,10 @@ class Interface:
         self.__s3_parameters: s3p.S3Parameters = s3_parameters
         self.__arguments = arguments
 
-    def exc(self) -> list[sc.Specification]:
+    def exc(self, limits: list) -> list[sc.Specification]:
         """
 
+        :param limits:
         :return:
         """
 
@@ -53,5 +55,8 @@ class Interface:
 
         # Unload model artefacts
         src.assets.artefacts.Artefacts(s3_parameters=self.__s3_parameters).exc(specifications=specifications)
+        src.assets.source.Source(
+            s3_parameters=self.__s3_parameters, arguments=self.__arguments, limits=limits).exc(
+            specifications=specifications)
 
         return specifications
