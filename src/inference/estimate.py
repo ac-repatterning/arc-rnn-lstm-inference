@@ -12,13 +12,13 @@ import src.inference.sequencing
 
 class Estimate:
     """
-    Estimate vis-a-vis known values
+    Determines estimates vis-à-vis known values
     """
 
     def __init__(self, attribute: atr.Attribute):
         """
 
-        :param attribute:
+        :param attribute: Refer to src.elements.attribute.py
         """
 
         self.__attribute = attribute
