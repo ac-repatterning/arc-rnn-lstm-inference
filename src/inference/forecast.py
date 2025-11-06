@@ -103,7 +103,6 @@ class Forecast:
         # Predicting future values requires (a) past values, and (b) a structure for future values
         past = frame.copy()[-self.__n_sequence:]
         f_structure = self.__get_structure(frame=frame)
-        print(f_structure)
 
         # Forecasting
         __future = self.__forecasting(model=model, past=past, f_structure=f_structure)
