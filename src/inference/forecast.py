@@ -78,10 +78,15 @@ class Forecast:
         :return:
         """
 
-        frame = src.inference.scaling.Scaling().inverse_transform(
+        structure = src.inference.scaling.Scaling().inverse_transform(
             data=data, scaling=self.__scaling)
+        structure = structure.copy().rename(columns=self.__rename)
 
-        return frame.rename(columns=self.__rename, inplace=True)
+        frame = data.copy()
+        frame = frame.copy().drop(columns=self.__modelling.get('targets'))
+        frame.loc[:, list(self.__rename.values())] = structure.values
+
+        return frame
 
     # pylint: disable=E1101
     def exc(self, model: tf.keras.models.Sequential, master: mr.Master) -> pd.DataFrame:
@@ -98,6 +103,7 @@ class Forecast:
         # Predicting future values requires (a) past values, and (b) a structure for future values
         past = frame.copy()[-self.__n_sequence:]
         f_structure = self.__get_structure(frame=frame)
+        print(f_structure)
 
         # Forecasting
         __future = self.__forecasting(model=model, past=past, f_structure=f_structure)
