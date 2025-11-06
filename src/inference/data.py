@@ -1,5 +1,6 @@
 """Module data.py"""
 import os
+
 import dask.dataframe as ddf
 import numpy as np
 import pandas as pd
@@ -16,16 +17,17 @@ class Data:
 
     def __init__(self, limits: list):
         """
-        Constructor
+
+        :param limits: The list of data-files-dates in focus.
         """
 
         self.__limits = limits
 
+        # Configurations
         self.__configurations = config.Config()
 
         # Focus
         self.__dtype = {'timestamp': np.float64, 'ts_id': np.float64, 'measure': float}
-
 
     def __get_data(self, listing: list[str]):
         """
@@ -56,9 +58,6 @@ class Data:
         listing  = [os.path.join(self.__configurations.data_, 'source', str(specification.catchment_id),
                                  str(specification.ts_id), f'{limit}.csv' )
                     for limit in self.__limits]
-
-        # listing = [f'{self.__endpoint}/{specification.catchment_id}/{specification.ts_id}/{limit}.csv'
-        #            for limit in self.__limits ]
 
         return listing
 
