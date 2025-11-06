@@ -9,6 +9,7 @@ import config
 import src.elements.attribute as atr
 import src.elements.master as mr
 import src.elements.specification as sc
+import src.elements.approximations as apr
 import src.inference.approximating
 import src.inference.attributes
 import src.inference.data
@@ -82,7 +83,8 @@ class Interface:
             attribute: atr.Attribute = __get_attributes(specification=specification)
             data: pd.DataFrame = __get_data(specification=specification, attribute=attribute)
             master: mr.Master = self.__set_transforms(data=data, scaling=attribute.scaling)
-            approximations: pd.DataFrame = __approximating(specification=specification, attribute=attribute, master=master)
+            approximations: apr.Approximations = __approximating(
+                specification=specification, attribute=attribute, master=master)
             message = __persist(specification=specification, approximations=approximations)
             computations.append(message)
 
