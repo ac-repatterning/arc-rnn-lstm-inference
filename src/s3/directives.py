@@ -44,6 +44,24 @@ class Directives:
 
         return state.returncode
 
+    def unload_(self, key: str, target: str):
+        """
+
+        :param key:
+        :param target:
+        :return:
+        """
+
+        # Create the destination directory
+        self.__directories.create(path=target)
+
+        # Hence
+        destination = target.replace(os.getcwd() + os.path.sep, '')
+
+        state = subprocess.run(f"aws s3 cp {key} {destination}/", shell=True, check=True)
+
+        return state.returncode
+
     def unload(self, source_bucket: str, origin: str, target: str) -> int:
         """
 
