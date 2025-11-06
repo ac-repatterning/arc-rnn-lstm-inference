@@ -110,5 +110,6 @@ class Forecast:
         __future = self.__forecasting(model=model, past=past, structure=structure)
         future = self.__reconfigure(data=__future.copy())
         future.loc[:, 'ts_id'] = specification.ts_id
+        future.loc[:, 'measure'] = np.nan
 
         return future
