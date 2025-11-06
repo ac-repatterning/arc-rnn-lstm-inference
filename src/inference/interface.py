@@ -13,6 +13,7 @@ import src.inference.approximating
 import src.inference.attributes
 import src.inference.data
 import src.inference.scaling
+import src.inference.persist
 
 
 class Interface:
@@ -74,13 +75,15 @@ class Interface:
         __get_attributes = dask.delayed(src.inference.attributes.Attributes(arguments=self.__arguments).exc)
         __get_data = dask.delayed(src.inference.data.Data(limits=self.__limits).exc)
         __approximating = dask.delayed(src.inference.approximating.Approximating().exc)
+        __persist = dask.delayed(src.inference.persist.Persist().exc)
 
         computations = []
         for specification in specifications:
             attribute: atr.Attribute = __get_attributes(specification=specification)
             data: pd.DataFrame = __get_data(specification=specification, attribute=attribute)
             master: mr.Master = self.__set_transforms(data=data, scaling=attribute.scaling)
-            message = __approximating(specification=specification, attribute=attribute, master=master)
+            approximations: pd.DataFrame = __approximating(specification=specification, attribute=attribute, master=master)
+            message = __persist(specification=specification, approximations=approximations)
             computations.append(message)
 
         messages = dask.compute(computations, scheduler='threads')[0]
