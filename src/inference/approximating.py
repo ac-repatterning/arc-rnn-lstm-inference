@@ -48,8 +48,10 @@ class Approximating:
 
         model = self.__get_model(specification=specification)
 
-        estimates: pd.DataFrame = src.inference.estimate.Estimate(attribute=attribute).exc(model=model, master=master)
-        forecasts: pd.DataFrame = src.inference.forecast.Forecast(attribute=attribute).exc(model=model, master=master)
+        estimates: pd.DataFrame = src.inference.estimate.Estimate(attribute=attribute).exc(
+            model=model, master=master)
+        forecasts: pd.DataFrame = src.inference.forecast.Forecast(attribute=attribute).exc(
+            model=model, master=master, specification=specification)
         frame = pd.concat([estimates, forecasts], ignore_index=True, axis=0)
 
         return frame
