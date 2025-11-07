@@ -62,7 +62,7 @@ class Estimate:
 
         return frame.rename(columns=self.__rename)
 
-    def exc(self, model: tf.keras.models.Sequential, master: mr.Master, ):
+    def exc(self, model: tf.keras.models.Sequential, master: mr.Master):
         """
 
         :param model:
