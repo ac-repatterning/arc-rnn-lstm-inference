@@ -19,7 +19,7 @@ def main():
     logger: logging.Logger = logging.getLogger(__name__)
     logger.info('Starting: %s', datetime.datetime.now().isoformat(timespec='microseconds'))
     logger.info('CPU: %s', tf.config.list_physical_devices('CPU'))
-    logger.info('GPU: %s', tf.config.list_physical_devices('GPU'))
+    logger.info('GPU: %s', gpu)
 
     # Assets
     limits = src.limits.Limits(arguments=arguments).exc()
@@ -74,5 +74,7 @@ if __name__ == '__main__':
     if arguments.get('cpu') | (not gpu):
         os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
         tf.config.set_visible_devices([], 'CPU')
+    else:
+        tf.config.set_visible_devices(gpu[0], 'GPU')
 
     main()
