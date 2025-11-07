@@ -30,6 +30,7 @@ class Interface:
         self.__service: sr.Service = service
         self.__s3_parameters: s3p.S3Parameters = s3_parameters
 
+        # Configurations
         self.__configurations = config.Config()
 
         # Metadata dictionary
@@ -55,22 +56,20 @@ class Interface:
         :return:
         """
 
-        # Prepare
-        src.transfer.cloud.Cloud(service=self.__service, s3_parameters=self.__s3_parameters).exc()
-
         # The strings for transferring data to Amazon S3 (Simple Storage Service)
         strings: pd.DataFrame = src.transfer.dictionary.Dictionary().exc(
-            path=self.__configurations.warehouse, extension='*', prefix='')
+            path=self.__configurations.pathway_, extension='*',
+            prefix=self.__configurations.prefix + '/')
 
         # Transfer
-
         if strings.empty:
             logging.info('Empty')
         else:
             strings = self.__get_metadata(frame=strings.copy())
             logging.info(strings)
+            src.transfer.cloud.Cloud(service=self.__service, s3_parameters=self.__s3_parameters).exc()
             messages = src.s3.ingress.Ingress(
-                service=self.__service, bucket_name=self.__s3_parameters.internal).exc(
+                service=self.__service, bucket_name=self.__s3_parameters.external).exc(
                 strings=strings, tags={'project': self.__configurations.project_tag})
             logging.info(messages)
 
