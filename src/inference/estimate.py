@@ -64,6 +64,11 @@ class Estimate:
 
     @staticmethod
     def __error(instances: pd.DataFrame):
+        """
+        
+        :param instances:
+        :return:
+        """
 
         raw = (instances['measure'] - instances['e_measure']).to_numpy()
         instances.loc[:, 'ape'] = 100 * np.absolute(np.true_divide(raw, instances['measure'].to_numpy()))
