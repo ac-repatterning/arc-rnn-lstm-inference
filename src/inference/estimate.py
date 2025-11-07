@@ -65,7 +65,7 @@ class Estimate:
     @staticmethod
     def __error(instances: pd.DataFrame):
         """
-        
+
         :param instances:
         :return:
         """
