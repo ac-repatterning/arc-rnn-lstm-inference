@@ -63,6 +63,7 @@ class Interface:
             path=self.__configurations.warehouse, extension='*', prefix='')
 
         # Transfer
+
         if strings.empty:
             logging.info('Empty')
         else:
@@ -72,3 +73,5 @@ class Interface:
                 service=self.__service, bucket_name=self.__s3_parameters.internal).exc(
                 strings=strings, tags={'project': self.__configurations.project_tag})
             logging.info(messages)
+
+
