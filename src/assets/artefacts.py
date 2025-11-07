@@ -38,7 +38,8 @@ class Artefacts:
         """
 
         origin = f'{self.__configurations.artefacts_}/{specification.catchment_id}/{specification.ts_id}'
-        target = os.path.join(self.__configurations.data_, 'artefacts', str(specification.catchment_id), str(specification.ts_id))
+        target = os.path.join(
+            self.__configurations.data_, 'artefacts', str(specification.catchment_id), str(specification.ts_id))
 
         self.__directories.create(target)
 
