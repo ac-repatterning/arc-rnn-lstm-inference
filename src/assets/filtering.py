@@ -4,6 +4,9 @@ import pandas as pd
 
 
 class Filtering:
+    """
+    Filtering
+    """
 
     def __init__(self, cases: pd.DataFrame, arguments: dict):
         """
