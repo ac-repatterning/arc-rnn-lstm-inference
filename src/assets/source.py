@@ -5,7 +5,6 @@ import os
 import dask
 
 import config
-import src.elements.s3_parameters as s3p
 import src.elements.specification as sc
 import src.s3.directives
 
