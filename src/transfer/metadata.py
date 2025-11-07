@@ -28,6 +28,7 @@ class Metadata:
     def exc(self, name: str) -> dict:
         """
 
+        :param name:
         :return:
         """
 
