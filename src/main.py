@@ -62,13 +62,14 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--codes', type=specific.codes,
                         help='Expects a string of one or more comma separated gauge time series codes.')
-    args = parser.parse_args()
+    parser.add_argument('--live', type=specific.live, help='Expects an integer; 1 indicates live, 0 indicates not live.')
+    args: argparse.Namespace = parser.parse_args()
 
     connector: boto3.session.Session
     s3_parameters: s3p.S3Parameters
     service: sr.Service
     arguments: dict
-    connector, s3_parameters, service, arguments = src.preface.interface.Interface().exc(codes=args.codes)
+    connector, s3_parameters, service, arguments = src.preface.interface.Interface().exc(args=args)
 
     # Devices
     os.environ['CUDA_VISIBLE_DEVICES'] = '0'
