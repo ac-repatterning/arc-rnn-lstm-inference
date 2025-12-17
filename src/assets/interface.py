@@ -11,6 +11,7 @@ import src.elements.service as sr
 import src.elements.specification as sc
 import src.assets.artefacts
 import src.assets.source
+import src.assets.foci
 
 
 class Interface:
@@ -40,7 +41,8 @@ class Interface:
 
         # Cases
         cases = src.assets.cases.Cases(service=self.__service, s3_parameters=self.__s3_parameters).exc()
-        cases = src.assets.filtering.Filtering(cases=cases.copy(), arguments=self.__arguments).exc()
+        foci = src.assets.foci.Foci(s3_parameters=self.__s3_parameters).exc()
+        cases = src.assets.filtering.Filtering(cases=cases.copy(), foci=foci.copy(), arguments=self.__arguments).exc()
 
         # Reference
         reference: pd.DataFrame = src.assets.reference.Reference(
