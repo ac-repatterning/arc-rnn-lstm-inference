@@ -26,8 +26,10 @@ def main():
     specifications = src.assets.interface.Interface(
         service=service, s3_parameters=s3_parameters, arguments=arguments).exc(limits=limits)
 
-    # Hence
+    # Inference
     src.inference.interface.Interface(arguments=arguments, limits=limits).exc(specifications=specifications)
+
+    # Transfer
     src.transfer.interface.Interface(connector=connector, service=service, s3_parameters=s3_parameters).exc()
 
     # Deleting __pycache__

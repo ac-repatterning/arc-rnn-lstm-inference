@@ -26,7 +26,7 @@ class Config:
         '''
         self.architecture = 'arc-rnn-lstm'
         self.s3_parameters_key = 's3_parameters.yaml'
-        self.arguments_key = f'artefacts/architecture/{self.architecture}/arguments.json'
+        self.arguments_key = f'architectures/{self.architecture}/arguments.json'
         
 
         '''
@@ -56,7 +56,7 @@ class Config:
         '''
         Cloud Prefix: Metadata [vis-à-vis Configurations Bucket]
         '''
-        self.metadata_ = 'arc-rnn-lstm-inference/external'
+        self.metadata_ = 'architectures/arc-rnn-lstm/inference/external'
 
 
         '''
