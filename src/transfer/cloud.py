@@ -1,4 +1,5 @@
 """Module setup.py"""
+import logging
 import sys
 
 import config
@@ -29,7 +30,7 @@ class Cloud:
 
         self.__service: sr.Service = service
         self.__s3_parameters: s3p.S3Parameters = s3_parameters
-        self.__bucket_name = self.__s3_parameters.internal
+        self.__bucket_name = self.__s3_parameters.external
 
         # Configurations, etc.
         self.__configurations = config.Config()
@@ -45,6 +46,7 @@ class Cloud:
 
         # Get the keys therein
         keys: list[str] = instance.objects(prefix=self.__configurations.prefix)
+        logging.info(keys)
 
         if len(keys) > 0:
             objects = [{'Key' : key} for key in keys]
@@ -61,7 +63,8 @@ class Cloud:
         """
 
         # An instance for interacting with Amazon S3 buckets.
-        bucket = src.s3.bucket.Bucket(service=self.__service, location_constraint=self.__s3_parameters.location_constraint,
+        bucket = src.s3.bucket.Bucket(service=self.__service,
+                                      location_constraint=self.__s3_parameters.location_constraint,
                                       bucket_name=self.__bucket_name)
 
         # Strategy Switch: If the bucket exist, do not clear the target prefix, overwrite files instead.
