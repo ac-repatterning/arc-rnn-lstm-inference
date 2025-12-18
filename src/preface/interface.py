@@ -1,4 +1,5 @@
 """Module interface.py"""
+import argparse
 import typing
 
 import boto3
@@ -56,9 +57,12 @@ class Interface:
 
         return arguments
 
-    def exc(self, codes: list[int] | None) -> typing.Tuple[boto3.session.Session, s3p.S3Parameters, sr.Service, dict]:
+    def exc(self, args: argparse.Namespace) -> typing.Tuple[boto3.session.Session, s3p.S3Parameters, sr.Service, dict]:
         """
 
+        :param args: Wherein ->
+                        codes: list[int] | None
+                        live: 0 | 1
         :return:
         """
 
@@ -74,9 +78,15 @@ class Interface:
         arguments: dict = self.__set_source(arguments=arguments.copy(), s3_parameters=s3_parameters)
 
         # Codes
-        if codes is not None:
-            arguments['series']['excerpt'] = codes
+        if args.codes is not None:
+            arguments['series']['excerpt'] = args.codes
+        else:
+            arguments['series']['excerpt'] = []
 
+        # Live
+        arguments['live'] = args.live
+
+        # Setting up
         src.preface.setup.Setup(service=service, s3_parameters=s3_parameters).exc()
 
         return connector, s3_parameters, service, arguments

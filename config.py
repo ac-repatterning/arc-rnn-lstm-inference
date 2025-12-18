@@ -50,7 +50,7 @@ class Config:
         '''
         Cloud Prefix: Destination
         '''
-        self.prefix = 'warehouse/arc-rnn-lstm-inference'
+        self.prefix = 'warehouse-t/arc-rnn-lstm-inference'
 
 
         '''

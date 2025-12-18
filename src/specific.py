@@ -1,5 +1,10 @@
 """Module specific.py"""
 import argparse
+import logging
+import sys
+
+import src.functions.cache
+
 
 class Specific:
     """
@@ -7,7 +12,11 @@ class Specific:
     """
 
     def __init__(self):
-        pass
+        """
+        Constructor
+        """
+
+        self.__cache = src.functions.cache.Cache()
 
     @staticmethod
     def codes(value: str=None) -> list[int] | None:
@@ -29,3 +38,25 @@ class Specific:
             raise err from err
 
         return _codes
+
+    def live(self, value: str='0') -> int:
+        """
+
+        :param value:
+        :return:
+        """
+
+        try:
+            _value = int(value)
+        except argparse.ArgumentTypeError as err:
+            logging.info(('The optional parameter --live expects an integer; '
+                          '1 indicates live, 0 indicates not live.'))
+            self.__cache.exc()
+            raise err from err
+
+        if _value in {0, 1}:
+            return _value
+
+        self.__cache.exc()
+        sys.exit(('The optional parameter --live expects an integer; '
+                  '1 indicates live, 0 indicates not live.'))
