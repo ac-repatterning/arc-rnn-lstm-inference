@@ -1,7 +1,6 @@
 """Module foci.py"""
 import datetime
 import logging
-import sys
 
 import pandas as pd
 
