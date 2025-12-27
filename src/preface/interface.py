@@ -44,25 +44,50 @@ class Interface:
 
         return arguments
 
-    def __get_arguments(self, connector: boto3.session.Session) -> dict:
+    def __get_arguments(self, connector: boto3.session.Session, s3_parameters: s3p.S3Parameters,
+                        args: argparse.Namespace) -> dict:
         """
 
         :param connector:
+        :param s3_parameters:
+        :param args:
         :return:
         """
 
         key_name = self.__configurations.arguments_key
-
         arguments = src.s3.configurations.Configurations(connector=connector).objects(key_name=key_name)
+        arguments: dict = self.__set_source(arguments=arguments.copy(), s3_parameters=s3_parameters)
+
+        # Codes
+        if args.codes is not None:
+            arguments['series']['excerpt'] = args.codes
+        else:
+            arguments['series']['excerpt'] = []
+
+        # Live
+        arguments['live'] = args.live
+
+        return arguments
+
+    @staticmethod
+    def __prefix(arguments: dict) -> dict:
+        """
+
+        :param arguments:
+        :return:
+        """
+
+        if arguments.get('live') == 1:
+            arguments['prefix'] = arguments.get('inference').get('live')
+        else:
+            arguments['prefix'] = arguments.get('inference').get('inspect')
 
         return arguments
 
     def exc(self, args: argparse.Namespace) -> typing.Tuple[boto3.session.Session, s3p.S3Parameters, sr.Service, dict]:
         """
 
-        :param args: Wherein ->
-                        codes: list[int] | None
-                        live: 0 | 1
+        :param args: Wherein -> codes: list[int] | None, live: 0 | 1
         :return:
         """
 
@@ -74,17 +99,8 @@ class Interface:
             connector=connector, region_name=s3_parameters.region_name).exc()
 
         # Arguments
-        arguments: dict = self.__get_arguments(connector=connector)
-        arguments: dict = self.__set_source(arguments=arguments.copy(), s3_parameters=s3_parameters)
-
-        # Codes
-        if args.codes is not None:
-            arguments['series']['excerpt'] = args.codes
-        else:
-            arguments['series']['excerpt'] = []
-
-        # Live
-        arguments['live'] = args.live
+        arguments: dict = self.__get_arguments(connector=connector, s3_parameters=s3_parameters, args=args)
+        arguments: dict = self.__prefix(arguments=arguments)
 
         # Setting up
         src.preface.setup.Setup(service=service, s3_parameters=s3_parameters).exc()

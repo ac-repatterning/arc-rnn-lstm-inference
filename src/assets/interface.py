@@ -43,7 +43,8 @@ class Interface:
         """
 
         # gauge stations identifiers vis-à-vis existing model artefacts
-        cases = src.assets.cases.Cases(service=self.__service, s3_parameters=self.__s3_parameters).exc()
+        cases = src.assets.cases.Cases(
+            service=self.__service, s3_parameters=self.__s3_parameters, arguments=self.__arguments).exc()
 
         # gauge stations identifiers vis-à-vis warning period
         foci = src.assets.foci.Foci(s3_parameters=self.__s3_parameters).exc()
@@ -79,8 +80,9 @@ class Interface:
         specifications: list[sc.Specification] = src.assets.specifications.Specifications().exc(reference=reference)
 
         # Unload model artefacts
-        src.assets.artefacts.Artefacts(s3_parameters=self.__s3_parameters).exc(specifications=specifications)
-        src.assets.source.Source(arguments=self.__arguments, limits=limits).exc(
-            specifications=specifications)
+        src.assets.artefacts.Artefacts(
+            s3_parameters=self.__s3_parameters, arguments=self.__arguments).exc(specifications=specifications)
+        src.assets.source.Source(
+            arguments=self.__arguments, limits=limits).exc(specifications=specifications)
 
         return specifications

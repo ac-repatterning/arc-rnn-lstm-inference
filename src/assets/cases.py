@@ -4,7 +4,6 @@ import os
 import numpy as np
 import pandas as pd
 
-import config
 import src.elements.s3_parameters as s3p
 import src.elements.service as sr
 import src.s3.prefix
@@ -15,18 +14,17 @@ class Cases:
     Retrieves the catchment & time series codes of the gauges in focus.
     """
 
-    def __init__(self, service: sr.Service, s3_parameters: s3p.S3Parameters):
+    def __init__(self, service: sr.Service, s3_parameters: s3p.S3Parameters, arguments: dict):
         """
 
         :param service:
         :param s3_parameters:
+        :param arguments:
         """
 
         self.__service = service
         self.__s3_parameters = s3_parameters
-
-        # Configurations
-        self.__configurations = config.Config()
+        self.__arguments = arguments
 
         # An instance for interacting with objects within an Amazon S3 prefix
         self.__pre = src.s3.prefix.Prefix(service=self.__service,
@@ -62,7 +60,7 @@ class Cases:
         :return:
         """
 
-        paths = self.__pre.objects(prefix=self.__configurations.artefacts_, delimiter='/')
+        paths = self.__pre.objects(prefix=self.__arguments.get('prefix').get('source'), delimiter='/')
 
         computations = []
         for path in paths:
