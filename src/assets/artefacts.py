@@ -16,14 +16,16 @@ class Artefacts:
     Unloads artefacts; for inference.
     """
 
-    def __init__(self, s3_parameters: s3p.S3Parameters):
+    def __init__(self, s3_parameters: s3p.S3Parameters, arguments: dict):
         """
 
         :param s3_parameters: The overarching S3 parameters settings of this project, e.g., region code
                               name, buckets, etc.
+        :param arguments:
         """
 
         self.__s3_parameters = s3_parameters
+        self.__arguments = arguments
 
         self.__configurations = config.Config()
         self.__directives =  src.s3.directives.Directives()
@@ -36,7 +38,7 @@ class Artefacts:
         :return:
         """
 
-        origin = f'{self.__configurations.artefacts_}/{specification.catchment_id}/{specification.ts_id}'
+        origin = f'{self.__arguments.get('prefix').get('source')}/{specification.catchment_id}/{specification.ts_id}'
         target = os.path.join(
             self.__configurations.data_, 'artefacts', str(specification.catchment_id), str(specification.ts_id))
 
