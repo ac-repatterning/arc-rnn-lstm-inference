@@ -35,8 +35,10 @@ RUN groupadd --system automata --gid $GID && \
     $PYTHON_VIRTUAL_ENV/bin/pip install --upgrade pip && \
     $PYTHON_VIRTUAL_ENV/bin/pip install --requirement /app/requirements.txt --no-cache-dir && \
     $PYTHON_VIRTUAL_ENV/bin/pip install --upgrade tf-keras --no-cache-dir && \
-    mkdir /app/warehouse && \
-    chown -R automaton:automata /app/warehouse
+    mkdir /app/warehouse && mkdir /app/data && mkdir -p /home/automaton && \
+    chown -R automaton:automata /app/warehouse && \
+    chown -R automaton:automata /app/data && \
+    chown -R automaton:automata /home/automaton
 
 
 # Hence
