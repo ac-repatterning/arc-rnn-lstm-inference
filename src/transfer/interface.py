@@ -18,17 +18,19 @@ class Interface:
     Class Interface
     """
 
-    def __init__(self, connector: boto3.session.Session, service: sr.Service,  s3_parameters: s3p):
+    def __init__(self, connector: boto3.session.Session, service: sr.Service, s3_parameters: s3p, arguments: dict):
         """
 
         :param connector:
         :param service: A suite of services for interacting with Amazon Web Services.
         :param s3_parameters: The overarching S3 parameters settings of this
                               project, e.g., region code name, buckets, etc.
+        :param arguments:
         """
 
         self.__service: sr.Service = service
         self.__s3_parameters: s3p.S3Parameters = s3_parameters
+        self.__arguments = arguments
 
         # Configurations
         self.__configurations = config.Config()
@@ -59,7 +61,7 @@ class Interface:
         # The strings for transferring data to Amazon S3 (Simple Storage Service)
         strings: pd.DataFrame = src.transfer.dictionary.Dictionary().exc(
             path=self.__configurations.pathway_, extension='*',
-            prefix=self.__configurations.prefix + '/')
+            prefix=self.__arguments.get('prefix').get('destination') + '/')
 
         # Transfer
         if strings.empty:
@@ -67,7 +69,8 @@ class Interface:
         else:
             strings = self.__get_metadata(frame=strings.copy())
             logging.info(strings)
-            src.transfer.cloud.Cloud(service=self.__service, s3_parameters=self.__s3_parameters).exc()
+            src.transfer.cloud.Cloud(
+                service=self.__service, s3_parameters=self.__s3_parameters, arguments=self.__arguments).exc()
             messages = src.s3.ingress.Ingress(
                 service=self.__service, bucket_name=self.__s3_parameters.external).exc(
                 strings=strings, tags={'project': self.__configurations.project_tag})
