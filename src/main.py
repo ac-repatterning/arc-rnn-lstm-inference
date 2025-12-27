@@ -27,10 +27,12 @@ def main():
         service=service, s3_parameters=s3_parameters, arguments=arguments).exc(limits=limits)
 
     # Inference
-    src.inference.interface.Interface(arguments=arguments, limits=limits).exc(specifications=specifications)
+    src.inference.interface.Interface(
+        arguments=arguments, limits=limits).exc(specifications=specifications)
 
     # Transfer
-    src.transfer.interface.Interface(connector=connector, service=service, s3_parameters=s3_parameters).exc()
+    src.transfer.interface.Interface(
+        connector=connector, service=service, s3_parameters=s3_parameters, arguments=arguments).exc()
 
     # Deleting __pycache__
     src.functions.cache.Cache().exc()
@@ -38,6 +40,7 @@ def main():
 
 if __name__ == '__main__':
 
+    # noinspection DuplicatedCode
     root = os.getcwd()
     sys.path.append(root)
     sys.path.append(os.path.join(root, 'src'))
@@ -71,7 +74,7 @@ if __name__ == '__main__':
     arguments: dict
     connector, s3_parameters, service, arguments = src.preface.interface.Interface().exc(args=args)
 
-    # Devices
+    # noinspection DuplicatedCode
     os.environ['CUDA_VISIBLE_DEVICES'] = '0'
     gpu = tf.config.list_physical_devices('GPU')
 
