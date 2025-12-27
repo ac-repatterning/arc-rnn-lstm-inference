@@ -48,18 +48,6 @@ class Config:
 
 
         '''
-        Cloud Prefix: Destination
-        '''
-        self.prefix = 'warehouse-t/arc-rnn-lstm-inference'
-
-
-        '''
         Cloud Prefix: Metadata [vis-à-vis Configurations Bucket]
         '''
         self.metadata_ = 'architectures/arc-rnn-lstm/inference/external'
-
-
-        '''
-        Cloud Prefix: Artefacts Source
-        '''
-        self.artefacts_ = f'assets/{self.architecture}'
