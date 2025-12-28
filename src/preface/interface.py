@@ -87,7 +87,7 @@ class Interface:
             case 3:
                 arguments['prefix'] = arguments.get('inference').get('warning')
             case _:
-                raise ValueError(f'Unknown request code {arguments.get('request')}')
+                raise ValueError(f'Unknown request code: {arguments.get('request')}')
 
         return arguments
 
