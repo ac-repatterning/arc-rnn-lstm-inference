@@ -1,3 +1,4 @@
+"""Module metadata.py"""
 import logging
 import sys
 
@@ -38,11 +39,6 @@ class Metadata:
         # filter in relation to context - live, on demand via input argument, inspecting inference per model
         metadata = src.assets.filtering.Filtering(
             cases=cases.copy(), foci=foci.copy(), arguments=self.__arguments).exc()
-
-        if metadata.empty:
-            logging.info('Nothing to do.  Is your inference request in relation to one or more existing models?')
-            src.functions.cache.Cache().exc()
-            sys.exit(0)
 
         return metadata
 
