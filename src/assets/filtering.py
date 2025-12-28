@@ -1,6 +1,12 @@
 """Module filtering.py"""
+import logging
+
+import sys
+
 import numpy as np
 import pandas as pd
+
+import src.functions.cache
 
 
 class Filtering:
@@ -66,10 +72,27 @@ class Filtering:
 
         return cases
 
-    def exc(self):
+    def exc(self) -> pd.DataFrame:
         """
 
         :return:
         """
 
+        match self.__arguments.get('request'):
+            case 0:
+                cases = self.__inspect()
+            case 1:
+                cases = self.__live()
+            case 2:
+                cases = self.__service()
+            case 3:
+                cases = self.__warning()
+            case _:
+                raise ValueError(f'Unknown request code: {self.__arguments.get('request')}')
 
+        if cases.empty:
+            logging.info('Nothing to do.  Is your inference request in relation to one or more existing models?')
+            src.functions.cache.Cache().exc()
+            sys.exit(0)
+
+        return cases
