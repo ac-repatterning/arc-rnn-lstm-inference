@@ -39,7 +39,7 @@ class Specific:
 
         return _codes
 
-    def live(self, value: str='0') -> int:
+    def request(self, value: str='0') -> int:
         """
 
         :param value:
@@ -49,7 +49,7 @@ class Specific:
         try:
             _value = int(value)
         except argparse.ArgumentTypeError as err:
-            logging.info(('The optional parameter --live expects an integer; '
+            logging.info(('The optional parameter --request expects an integer; '
                           '0 indicates pre-live latest models, 1 indicates live publication of latest models, '
                           '2 indicates on-demand inference service, 3 indicates warning period inference.'))
             self.__cache.exc()
@@ -59,5 +59,6 @@ class Specific:
             return _value
 
         self.__cache.exc()
-        sys.exit(('The optional parameter --live expects an integer; '
-                  '1 indicates live, 0 indicates not live.'))
+        sys.exit(('The optional parameter --request expects an integer; '
+                  '0 indicates pre-live latest models, 1 indicates live publication of latest models, '
+                  '2 indicates on-demand inference service, 3 indicates warning period inference.'))
