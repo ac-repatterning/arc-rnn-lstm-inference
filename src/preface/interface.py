@@ -64,8 +64,8 @@ class Interface:
         else:
             arguments['series']['excerpt'] = []
 
-        # Live
-        arguments['live'] = args.live
+        # Request
+        arguments['request'] = args.request
 
         return arguments
 
@@ -77,17 +77,24 @@ class Interface:
         :return:
         """
 
-        if arguments.get('live') == 1:
-            arguments['prefix'] = arguments.get('inference').get('live')
-        else:
-            arguments['prefix'] = arguments.get('inference').get('inspect')
+        match arguments.get('request'):
+            case 0:
+                arguments['prefix'] = arguments.get('inference').get('inspect')
+            case 1:
+                arguments['prefix'] = arguments.get('inference').get('live')
+            case 2:
+                arguments['prefix'] = arguments.get('inference').get('service')
+            case 3:
+                arguments['prefix'] = arguments.get('inference').get('warning')
+            case _:
+                raise ValueError(f'Unknown request code {arguments.get('request')}')
 
         return arguments
 
     def exc(self, args: argparse.Namespace) -> typing.Tuple[boto3.session.Session, s3p.S3Parameters, sr.Service, dict]:
         """
 
-        :param args: Wherein -> codes: list[int] | None, live: 0 | 1
+        :param args: Wherein -> codes: list[int] | None, live: 0 | 1 | 2 | 3
         :return:
         """
 
