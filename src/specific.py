@@ -50,11 +50,12 @@ class Specific:
             _value = int(value)
         except argparse.ArgumentTypeError as err:
             logging.info(('The optional parameter --live expects an integer; '
-                          '1 indicates live, 0 indicates not live.'))
+                          '0 indicates pre-live latest models, 1 indicates live publication of latest models, '
+                          '2 indicates on-demand inference service, 3 indicates warning period inference.'))
             self.__cache.exc()
             raise err from err
 
-        if _value in {0, 1}:
+        if _value in {0, 1, 2, 3}:
             return _value
 
         self.__cache.exc()
