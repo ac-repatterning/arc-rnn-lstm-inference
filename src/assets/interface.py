@@ -5,6 +5,7 @@ import pandas as pd
 
 import src.assets.artefacts
 import src.assets.menu
+import src.assets.metadata
 import src.assets.reference
 import src.assets.source
 import src.assets.specifications
@@ -40,7 +41,8 @@ class Interface:
         """
 
         # The gauge stations in focus
-        metadata = ...
+        metadata = src.assets.metadata.Metadata(
+            service=self.__service, s3_parameters=self.__s3_parameters, arguments=self.__arguments).exc()
 
         # Reference
         reference: pd.DataFrame = src.assets.reference.Reference(
