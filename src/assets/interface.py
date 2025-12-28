@@ -36,7 +36,7 @@ class Interface:
         self.__s3_parameters: s3p.S3Parameters = s3_parameters
         self.__arguments = arguments
 
-    def __get_instances(self) -> pd.DataFrame:
+    def __get_metadata(self) -> pd.DataFrame:
         """
 
         :return:
@@ -50,15 +50,15 @@ class Interface:
         foci = src.assets.foci.Foci(s3_parameters=self.__s3_parameters).exc()
 
         # filter in relation to context - live, on demand via input argument, inspecting inference per model
-        instances = src.assets.filtering.Filtering(
+        metadata = src.assets.filtering.Filtering(
             cases=cases.copy(), foci=foci.copy(), arguments=self.__arguments).exc()
 
-        if instances.empty:
+        if metadata.empty:
             logging.info('Nothing to do.  Is your inference request in relation to one or more existing models?')
             src.functions.cache.Cache().exc()
             sys.exit(0)
 
-        return instances
+        return metadata
 
     def exc(self, limits: list) -> list[sc.Specification]:
         """
@@ -67,12 +67,13 @@ class Interface:
         :return:
         """
 
-        instances = self.__get_instances()
+        # The gauge stations in focus
+        metadata = self.__get_metadata()
 
         # Reference
         reference: pd.DataFrame = src.assets.reference.Reference(
-            s3_parameters=self.__s3_parameters).exc(codes=instances['ts_id'].unique())
-        reference = reference.copy().merge(instances, how='left', on=['catchment_id', 'ts_id'])
+            s3_parameters=self.__s3_parameters).exc(codes=metadata['ts_id'].unique())
+        reference = reference.copy().merge(metadata, how='left', on=['catchment_id', 'ts_id'])
 
         # Menu
         src.assets.menu.Menu().exc(reference=reference)
