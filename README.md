@@ -1,6 +1,15 @@
 
 <br>
 
+master<br>
+[![Hydrography: Inference ↠ Long Short-Term Memory Models [repatterning/arc-rnn-lstm]](https://github.com/repatterning/arc-rnn-lstm-inference/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/repatterning/arc-rnn-lstm-inference/actions/workflows/main.yml)
+
+develop<br>
+[![Hydrography: Inference ↠ Long Short-Term Memory Models [repatterning/arc-rnn-lstm]](https://github.com/repatterning/arc-rnn-lstm-inference/actions/workflows/main.yml/badge.svg?branch=develop)](https://github.com/repatterning/arc-rnn-lstm-inference/actions/workflows/main.yml)
+
+
+<br>
+
 **Inference**
 
 Within an applicable infrastructure set-up:
