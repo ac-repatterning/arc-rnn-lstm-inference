@@ -1,27 +1,27 @@
 """Module metadata.py"""
-import logging
-import sys
 
 import pandas as pd
-
-import src.elements.service as sr
-import src.elements.s3_parameters as s3p
 
 import src.assets.cases
 import src.assets.filtering
 import src.assets.foci
+import src.elements.s3_parameters as s3p
+import src.elements.service as sr
 import src.functions.cache
 
 
 class Metadata:
+    """
+    Retrieves the metadata of the gauges in focus.
+    """
 
     def __init__(self, service: sr.Service, s3_parameters: s3p.S3Parameters, arguments: dict):
         """
 
-        :param service:
+        :param service: A suite of services for interacting with Amazon Web Services.<br>
         :param s3_parameters: The overarching S3 (Simple Storage Service) parameters
-                              settings of this project, e.g., region code name, buckets, etc.
-        :param arguments:
+                              settings of this project, e.g., region code name, buckets, etc.<br>
+        :param arguments: A set of arguments vis-à-vis computation & storage objectives.<br>
         """
 
         self.__service: sr.Service = service
@@ -31,8 +31,8 @@ class Metadata:
     def __get_metadata(self, cases: pd.DataFrame, foci: pd.DataFrame) -> pd.DataFrame:
         """
 
-        :param cases:
-        :param foci:
+        :param cases: The gauge stations that have model artefacts.<br>
+        :param foci: The gauge stations within a current warning area.<br>
         :return:
         """
 
