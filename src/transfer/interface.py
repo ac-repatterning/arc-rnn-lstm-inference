@@ -56,14 +56,19 @@ class Interface:
     def __transfer(self, strings: pd.DataFrame):
         """
 
-        :param strings:
+        :param strings: A table outlining the files to be transferred
         :return:
         """
 
+        # Add metadata field
+        strings = self.__get_metadata(frame=strings.copy())
+
+        # Depending on the request, clear the targetted storage area first
         if self.__arguments.get('request') in {0, 3}:
             src.transfer.cloud.Cloud(
                 service=self.__service, s3_parameters=self.__s3_parameters, arguments=self.__arguments).exc()
 
+        # Finally, transfer
         messages = src.s3.ingress.Ingress(
             service=self.__service, bucket_name=self.__s3_parameters.external).exc(
             strings=strings, tags={'project': self.__configurations.project_tag})
@@ -82,10 +87,5 @@ class Interface:
 
         if strings.empty:
             logging.info('There are no inference artefacts to transfer.')
-            return None
-
-        # Transfer
-        strings = self.__get_metadata(frame=strings.copy())
-        logging.info(strings)
-
-        self.__transfer(strings=strings)
+        else:
+            self.__transfer(strings=strings)
