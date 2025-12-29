@@ -35,7 +35,7 @@ class Filtering:
 
         return self.__cases
 
-    def __live(self):
+    def __live(self) -> pd.DataFrame:
         """
         The number of cases herein will be due to the model artefacts that exist within the `live` storage area.
 
@@ -50,7 +50,7 @@ class Filtering:
 
         return cases
 
-    def __service(self):
+    def __service(self) -> pd.DataFrame:
         """
 
         :return:
