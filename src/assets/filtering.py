@@ -16,9 +16,9 @@ class Filtering:
     def __init__(self, cases: pd.DataFrame, foci: pd.DataFrame, arguments: dict):
         """
 
-        :param cases: The gauge stations that have model artefacts
-        :param foci: The gauge stations within a current warning area
-        :param arguments:
+        :param cases: The gauge stations that have model artefacts.<br>
+        :param foci: The gauge stations within a current warning area.<br>
+        :param arguments: A set of arguments vis-à-vis computation & storage objectives.<br>
         """
 
         self.__cases = cases
