@@ -42,7 +42,13 @@ class Filtering:
         :return:
         """
 
-        return self.__cases
+        excerpt = self.__arguments.get('series').get('excerpt')
+
+        codes = np.unique(np.array(excerpt))
+        cases = self.__cases.copy().loc[self.__cases['ts_id'].isin(codes), :]
+        cases = cases if cases.shape[0] > 0 else self.__cases
+
+        return cases
 
     def __service(self):
         """
