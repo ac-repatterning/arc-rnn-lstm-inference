@@ -25,7 +25,7 @@ class Filtering:
         self.__foci = foci
         self.__arguments = arguments
 
-    def __inspect(self):
+    def __inspect(self) -> pd.DataFrame:
         """
         Beware, the number of cases herein will be due to the model artefacts that exist within the
         `inspect`, i.e., pre-live, storage area.
