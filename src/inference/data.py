@@ -17,13 +17,11 @@ class Data:
     Data
     """
 
-    def __init__(self, limits: list):
+    def __init__(self):
         """
 
-        :param limits: The list of data-files-dates in focus.
+        Constructor
         """
-
-        self.__limits = limits
 
         # Configurations
         self.__configurations = config.Config()
