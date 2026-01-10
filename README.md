@@ -27,7 +27,7 @@ wherein
 
 * --request: $\in {0, 1, 2, 3}$ &Rarr; $0$ inspection, $1$ latest models live, $2$ on-demand inference service, $3$ warning period inference
 * If --request $\in {1, 2}$ $\rightarrow$
-  * --codes: A comma-separated list of gauge-station-time-series identification codes
+  > --codes: A comma-separated list of gauge-station-time-series identification codes
 
 **and** (a) relevant authentication & authorisation settings must be in-place, (b) storage areas must be set-up & accessible.
 
