@@ -49,6 +49,11 @@ class Forecast:
     # pylint: disable=E1101
     def __forecasting(self, model: tf.keras.models.Sequential, past: pd.DataFrame, structure: pd.DataFrame) -> pd.DataFrame:
         """
+        for i in range(self.__n_points_future):
+            values = model.predict(x=history[:, -self.__n_sequence:, :], verbose=0)
+            template.loc[i, self.__modelling.get('targets')] = values
+            affix = template.loc[i, self.__modelling.get('fields')].values.astype(float)
+            history = np.concatenate((history, affix[None, None, :]), axis=1)
 
         :param model:
         :param past:
@@ -64,18 +69,10 @@ class Forecast:
         template = structure.copy()
 
         # Hence
-        for i in range(self.__n_points_future):
+        for _ in range(self.__n_points_future):
             value = model(history[:, -self.__n_sequence:, :])
             history = np.concatenate((history, [[[float(value.numpy().squeeze())]]]), axis=1)
         template.loc[:, self.__modelling.get('targets')] = history[:, self.__n_points_future:, :].squeeze()
-
-        '''
-        for i in range(self.__n_points_future):
-            values = model.predict(x=history[:, -self.__n_sequence:, :], verbose=0)
-            template.loc[i, self.__modelling.get('targets')] = values
-            affix = template.loc[i, self.__modelling.get('fields')].values.astype(float)
-            history = np.concatenate((history, affix[None, None, :]), axis=1)
-        '''
 
         return template.copy()
 
