@@ -42,7 +42,7 @@ class Metadata:
 
         return metadata
 
-    def exc(self):
+    def exc(self) -> pd.DataFrame:
         """
 
         :return:
