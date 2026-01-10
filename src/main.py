@@ -23,12 +23,9 @@ def main():
 
     # Assets
     limits = src.limits.Limits(arguments=arguments).exc()
-    logger.info(limits)
     specifications = src.assets.interface.Interface(
         service=service, s3_parameters=s3_parameters, arguments=arguments).exc(limits=limits)
-    logger.info(specifications)
 
-    '''
     # Inference
     src.inference.interface.Interface(
         arguments=arguments, limits=limits).exc(specifications=specifications)
@@ -36,7 +33,6 @@ def main():
     # Transfer
     src.transfer.interface.Interface(
         connector=connector, service=service, s3_parameters=s3_parameters, arguments=arguments).exc()
-    '''
 
     # Deleting __pycache__
     src.functions.cache.Cache().exc()
@@ -73,7 +69,6 @@ if __name__ == '__main__':
                         help=('Expects an integer; 0 inspection, 1 latest models live, '
                               '2 on-demand inference service, 3 warning period inference.'))
     args: argparse.Namespace = parser.parse_args()
-    logging.info(args)
 
     connector: boto3.session.Session
     s3_parameters: s3p.S3Parameters
