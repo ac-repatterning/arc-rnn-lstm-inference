@@ -17,8 +17,6 @@ class Source:
     def __init__(self, arguments: dict, limits: list):
         """
 
-        :param s3_parameters: The overarching S3 parameters settings of this project, e.g., region code
-                              name, buckets, etc.
         :param arguments:
         :param limits:
         """
@@ -41,23 +39,16 @@ class Source:
         :return:
         """
 
+        # Focusing on the relevant data sets
         parts = [ f"--include \'{limit}*\'" for limit in self.__limits]
         extra = '--recursive ' + "--exclude \'*\' " + ' '.join(parts)
+
+        # key & target
         key = f'{self.__endpoint}/{specification.catchment_id}/{specification.ts_id}/'
-        target = os.path.join(self.__configurations.data_, 'source', str(specification.catchment_id), str(specification.ts_id))
+        target = os.path.join(
+            self.__configurations.data_, 'source', str(specification.catchment_id), str(specification.ts_id))
+
         status = self.__directives.unload_(key=key, target=target, extra=extra)
-
-
-        '''
-        keys = [f'{self.__endpoint}/{specification.catchment_id}/{specification.ts_id}/{limit}.csv'
-                   for limit in self.__limits ]
-        target = os.path.join(self.__configurations.data_, 'source', str(specification.catchment_id), str(specification.ts_id))
-        status = []
-        for key in keys:
-            status.append(self.__directives.unload_(key=key, target=target))
-
-        return sum(status)
-        '''
 
         return status
 
