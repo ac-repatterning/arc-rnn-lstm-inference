@@ -44,11 +44,12 @@ class Directives:
 
         return state.returncode
 
-    def unload_(self, key: str, target: str):
+    def unload_(self, key: str, target: str, extra: str = ''):
         """
 
         :param key:
         :param target:
+        :param extra: e.g., --recursive --exclude ... --include ...
         :return:
         """
 
@@ -58,7 +59,7 @@ class Directives:
         # Hence
         destination = target.replace(os.getcwd() + os.path.sep, '')
 
-        state = subprocess.run(f"aws s3 cp {key} {destination}/", shell=True, check=True)
+        state = subprocess.run(f"aws s3 cp {key} {destination}/ {extra}", shell=True, check=True)
 
         return state.returncode
 
