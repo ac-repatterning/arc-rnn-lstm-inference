@@ -32,7 +32,7 @@ class Source:
         self.__directives =  src.s3.directives.Directives()
 
     @dask.delayed
-    def __acquire(self, specification: sc.Specification):
+    def __acquire(self, specification: sc.Specification) -> int:
         """
 
         :param specification: Refer to src.elements.specification.py
@@ -52,7 +52,7 @@ class Source:
 
         return status
 
-    def exc(self, specifications: list[sc.Specification]):
+    def exc(self, specifications: list[sc.Specification]) -> None:
         """
 
         :param specifications: A list items of type Specification; refer to src.elements.specification.py
