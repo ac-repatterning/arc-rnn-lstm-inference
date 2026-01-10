@@ -33,7 +33,15 @@ class Filtering:
         :return:
         """
 
-        return self.__cases
+        values: list = self.__arguments.get('series').get('excerpt')
+
+        if values is None:
+            return self.__cases
+
+        frame = self.__cases.copy().loc[self.__cases['ts_id'].isin(values), :]
+        logging.info(frame)
+
+        return frame
 
     def __live(self) -> pd.DataFrame:
         """
