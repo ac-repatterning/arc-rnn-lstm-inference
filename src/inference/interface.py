@@ -21,15 +21,13 @@ class Interface:
     Interface
     """
 
-    def __init__(self, arguments: dict, limits: list):
+    def __init__(self, arguments: dict):
         """
 
         :param arguments: A set of arguments vis-à-vis computation & storage objectives.<br>
-        :param limits: The list of data-files-dates in focus.
         """
 
         self.__arguments = arguments
-        self.__limits = limits
 
         # Setting up
         self.__scaling = src.inference.scaling.Scaling()
@@ -56,7 +54,7 @@ class Interface:
         """
 
         __get_attributes = dask.delayed(src.inference.attributes.Attributes(arguments=self.__arguments).exc)
-        __get_data = dask.delayed(src.inference.data.Data(limits=self.__limits).exc)
+        __get_data = dask.delayed(src.inference.data.Data().exc)
         __approximating = dask.delayed(src.inference.approximating.Approximating().exc)
         __persist = dask.delayed(src.inference.persist.Persist().exc)
 

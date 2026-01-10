@@ -1,4 +1,6 @@
 """Module data.py"""
+
+import glob
 import os
 
 import dask.dataframe as ddf
@@ -15,13 +17,11 @@ class Data:
     Data
     """
 
-    def __init__(self, limits: list):
+    def __init__(self):
         """
 
-        :param limits: The list of data-files-dates in focus.
+        Constructor
         """
-
-        self.__limits = limits
 
         # Configurations
         self.__configurations = config.Config()
@@ -55,9 +55,9 @@ class Data:
         :return:
         """
 
-        listing  = [os.path.join(self.__configurations.data_, 'source', str(specification.catchment_id),
-                                 str(specification.ts_id), f'{limit}.csv' )
-                    for limit in self.__limits]
+        listing = glob.glob(
+            pathname=os.path.join(self.__configurations.data_, 'source', str(specification.catchment_id),
+                                  str(specification.ts_id), '*.csv'))
 
         return listing
 
