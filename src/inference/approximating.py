@@ -5,10 +5,10 @@ import pandas as pd
 import tensorflow as tf
 
 import config
+import src.elements.approximations as apr
 import src.elements.attribute as atr
 import src.elements.master as mr
 import src.elements.specification as sc
-import src.elements.approximations as apr
 import src.inference.estimate
 import src.inference.forecast
 
@@ -36,7 +36,7 @@ class Approximating:
             self.__configurations.data_, 'artefacts', str(specification.catchment_id), str(specification.ts_id))
 
         return tf.keras.models.load_model(
-            filepath=os.path.join(path, 'model.keras'))
+            filepath=os.path.join(path, 'model'))
 
     def exc(self, specification: sc.Specification, attribute: atr.Attribute, master: mr.Master) -> apr.Approximations:
         """
