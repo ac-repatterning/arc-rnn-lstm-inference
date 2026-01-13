@@ -62,7 +62,7 @@ class Interface:
         if args.codes is not None:
             arguments['series']['excerpt'] = args.codes
         else:
-            arguments['series']['excerpt'] = []
+            arguments['series']['excerpt'] = None
 
         # Request
         arguments['request'] = args.request
