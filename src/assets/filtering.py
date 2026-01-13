@@ -39,7 +39,6 @@ class Filtering:
             return self.__cases
 
         frame = self.__cases.copy().loc[self.__cases['ts_id'].isin(values), :]
-        logging.info(frame)
 
         return frame
 
