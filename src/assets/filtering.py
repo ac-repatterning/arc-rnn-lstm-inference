@@ -50,9 +50,11 @@ class Filtering:
         :return:
         """
 
-        excerpt = self.__arguments.get('series').get('excerpt')
+        __excerpt = self.__arguments.get('series').get('excerpt')
+        if __excerpt is None:
+            return pd.DataFrame()
 
-        codes = np.unique(np.array(excerpt))
+        codes = np.unique(np.array(__excerpt))
         cases = self.__cases.copy().loc[self.__cases['ts_id'].isin(codes), :]
         cases = cases if cases.shape[0] > 0 else self.__cases
 
