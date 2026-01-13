@@ -79,7 +79,8 @@ class Cases:
 
         keys = self.__get_keys()
         if len(keys) > 0:
-            objects = [f's3://{self.__s3_parameters.internal}/{key}' for key in keys]
+            objects = [f's3://{self.__s3_parameters.internal}/{key}' for key in keys
+                       if os.path.basename(os.path.dirname(key)) != 'model']
         else:
             return pd.DataFrame()
 
