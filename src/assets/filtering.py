@@ -39,38 +39,23 @@ class Filtering:
             return self.__cases
 
         frame = self.__cases.copy().loc[self.__cases['ts_id'].isin(values), :]
-        logging.info(frame)
 
         return frame
 
-    def __live(self) -> pd.DataFrame:
+    def __miscellaneous(self) -> pd.DataFrame:
         """
         The number of cases herein will be due to the model artefacts that exist within the `live` storage area.
 
         :return:
         """
 
-        excerpt = self.__arguments.get('series').get('excerpt')
-
-        codes = np.unique(np.array(excerpt))
-        cases = self.__cases.copy().loc[self.__cases['ts_id'].isin(codes), :]
-        cases = cases if cases.shape[0] > 0 else self.__cases
-
-        return cases
-
-    def __service(self) -> pd.DataFrame:
-        """
-
-        :return:
-        """
-
-        excerpt = self.__arguments.get('series').get('excerpt')
-        if excerpt is None:
+        __excerpt = self.__arguments.get('series').get('excerpt')
+        if __excerpt is None:
             return pd.DataFrame()
 
-        codes = np.unique(np.array(excerpt))
+        codes = np.unique(np.array(__excerpt))
         cases = self.__cases.copy().loc[self.__cases['ts_id'].isin(codes), :]
-        cases = cases if cases.shape[0] > 0 else pd.DataFrame()
+        cases = cases if cases.shape[0] > 0 else self.__cases
 
         return cases
 
@@ -99,9 +84,9 @@ class Filtering:
             case 0:
                 cases = self.__inspect()
             case 1:
-                cases = self.__live()
+                cases = self.__miscellaneous()
             case 2:
-                cases = self.__service()
+                cases = self.__miscellaneous()
             case 3:
                 cases = self.__warning()
             case _:
