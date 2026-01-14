@@ -21,6 +21,7 @@ ENV PYTHON_VIRTUAL_ENV=/opt/environment
 
 
 # Setting-up
+# $PYTHON_VIRTUAL_ENV/bin/pip install --upgrade tf-keras --no-cache-dir
 RUN groupadd --system automata --gid $GID && \
     useradd --system automaton --uid $UID --gid $GID && \
     apt update && apt -q -y upgrade && apt -y install sudo && \
@@ -34,7 +35,6 @@ RUN groupadd --system automata --gid $GID && \
     python3 -m venv $PYTHON_VIRTUAL_ENV && \
     $PYTHON_VIRTUAL_ENV/bin/pip install --upgrade pip && \
     $PYTHON_VIRTUAL_ENV/bin/pip install --requirement /app/requirements.txt --no-cache-dir && \
-    $PYTHON_VIRTUAL_ENV/bin/pip install --upgrade tf-keras --no-cache-dir && \
     mkdir /app/warehouse && mkdir /app/data && mkdir -p /home/automaton && \
     chown -R automaton:automata /app/warehouse && \
     chown -R automaton:automata /app/data && \
