@@ -1,5 +1,4 @@
 """Module data.py"""
-
 import glob
 import os
 
@@ -92,8 +91,9 @@ class Data:
         data = self.__set_missing(data=data.copy())
 
         # Filter
+        # or: data = data.copy().iloc[-n_samples_seen_:, :]
         n_samples_seen_ = attribute.scaling.get('n_samples_seen_')
-        data = data.copy().loc[-n_samples_seen_:, :]
+        data = data.copy().tail(n_samples_seen_)
 
         # datetime
         data['date'] = pd.to_datetime(data['timestamp'], unit='ms')
