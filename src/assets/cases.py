@@ -110,4 +110,3 @@ class Cases:
         keys: list[str] = sum(elements, [])
 
         return self.__get_cases(keys=keys)
-    
