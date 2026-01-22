@@ -1,5 +1,7 @@
 """Module estimate.py"""
 
+import typing
+
 import numpy as np
 import pandas as pd
 import tensorflow as tf
@@ -29,7 +31,7 @@ class Estimate:
         # Renaming
         self.__rename = { arg: f'e_{arg}' for arg in self.__targets}
 
-    def __get_modelling_arguments(self):
+    def __get_modelling_arguments(self) -> typing.Tuple[list, list, list]:
         """
 
         :return:
@@ -93,7 +95,7 @@ class Estimate:
         frame = self.__reconfigure(design=master.transforms, predictions=predictions)
 
         # Original & Estimates
-        __original = master.data.copy()[-predictions.shape[0]:]
+        __original = master.data.copy().iloc[-predictions.shape[0]:, :]
         instances = pd.concat([__original.copy().reset_index(drop=True), frame[list(self.__rename.values())]],
                               axis=1)
 
