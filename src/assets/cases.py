@@ -1,6 +1,7 @@
 """Module cases.py"""
 import os
 
+import dask
 import numpy as np
 import pandas as pd
 
@@ -18,9 +19,9 @@ class Cases:
         """
 
         :param service: A suite of services for interacting with Amazon Web Services.<br>
-        :param s3_parameters: The overarching S3 (Simple Storage Service) parameters
-                              settings of this project, e.g., region code name, buckets, etc.<br>
-        :param arguments: A set of arguments vis-à-vis computation & storage objectives.<br>
+        :param s3_parameters: The overarching S3 parameters settings of this
+                              project, e.g., region code name, buckets, etc.<br>
+        :param arguments: A set of arguments vis-à-vis computation & storage objectives.
         """
 
         self.__service = service
@@ -51,40 +52,27 @@ class Cases:
 
         # Collating
         values = values.copy().join(splittings, how='left')
+
+        # Drop 'endpoint'
         values.drop(columns='endpoint', inplace=True)
 
         return values
 
-    def __get_keys(self) -> list[str]:
+    def __get_cases(self, keys: list[str]) -> pd.DataFrame:
         """
 
+        :param keys:
         :return:
         """
 
-        paths = self.__pre.objects(prefix=self.__arguments.get('prefix').get('source'), delimiter='/')
-
-        computations = []
-        for path in paths:
-            listings = self.__pre.objects(prefix=path, delimiter='')
-            computations.append(listings)
-        keys: list[str] = sum(computations, [])
-
-        return keys
-
-    def exc(self) -> pd.DataFrame:
-        """
-
-        :return:
-        """
-
-        keys = self.__get_keys()
+        # ... ensure the core model directory is excluded
         if len(keys) > 0:
             objects = [f's3://{self.__s3_parameters.internal}/{key}' for key in keys
                        if os.path.basename(os.path.dirname(key)) != 'model']
         else:
             return pd.DataFrame()
 
-        # The variable `objects` is a list of uniform resource locators.  Each locator includes a 'ts_id',
+        # The variable objects is a list of uniform resource locators.  Each locator includes a 'ts_id',
         # 'catchment_id', 'datestr' substring; the function __get_elements extracts these items.
         values = self.__get_elements(objects=objects)
 
@@ -93,3 +81,32 @@ class Cases:
         values['ts_id'] = values['ts_id'].astype(dtype=np.int64)
 
         return values
+
+    @dask.delayed
+    def __get_listings(self, path: str) -> list[str]:
+        """
+
+        :param path:
+        :return:
+        """
+
+        listings = self.__pre.objects(prefix=path, delimiter='')
+
+        return listings
+
+    def exc(self) -> pd.DataFrame:
+        """
+
+        :return:
+        """
+
+        paths = self.__pre.objects(prefix=self.__arguments.get('prefix').get('source'), delimiter='/')
+        paths = self.__pre.objects(paths[0], delimiter='/')
+
+        computations = []
+        for path in paths:
+            computations.append(self.__get_listings(path=path))
+        elements = dask.compute(computations, scheduler='threads')[0]
+        keys: list[str] = sum(elements, [])
+
+        return self.__get_cases(keys=keys)

@@ -1,5 +1,7 @@
 """Module estimate.py"""
 
+import typing
+
 import numpy as np
 import pandas as pd
 import tensorflow as tf
@@ -29,7 +31,7 @@ class Estimate:
         # Renaming
         self.__rename = { arg: f'e_{arg}' for arg in self.__targets}
 
-    def __get_modelling_arguments(self):
+    def __get_modelling_arguments(self) -> typing.Tuple[list, list, list]:
         """
 
         :return:
@@ -59,8 +61,11 @@ class Estimate:
         # Inverse transform; of the relevant fields
         frame = src.inference.scaling.Scaling().inverse_transform(
             data=structure, scaling=self.__attribute.scaling)
+        frame.rename(columns=self.__rename, inplace=True)
 
-        return frame.rename(columns=self.__rename)
+        field: list = list(self.__rename.values())
+
+        return frame.loc[:, field]
 
     @staticmethod
     def __error(instances: pd.DataFrame):
@@ -93,9 +98,8 @@ class Estimate:
         frame = self.__reconfigure(design=master.transforms, predictions=predictions)
 
         # Original & Estimates
-        __original = master.data.copy()[-predictions.shape[0]:]
-        instances = pd.concat([__original.copy().reset_index(drop=True), frame[list(self.__rename.values())]],
-                              axis=1)
+        __original = master.data.copy().iloc[-predictions.shape[0]:, :]
+        instances = pd.concat([__original.copy().reset_index(drop=True), frame], axis=1)
 
         # Absolute percentage error
         instances = self.__error(instances=instances.copy())
