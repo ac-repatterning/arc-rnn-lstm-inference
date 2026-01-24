@@ -66,8 +66,8 @@ if __name__ == '__main__':
     parser.add_argument('--codes', type=specific.codes,
                         help='Expects a string of one or more comma separated gauge time series codes.')
     parser.add_argument('--request', type=specific.request, default=0,
-                        help=('Expects an integer; 0 inspection, 1 latest models live, '
-                              '2 on-demand inference service, 3 warning period inference.'))
+                        help=('Expects an integer; 0 initial, 1 live, '
+                              '2 on-demand inference, 3 warning period inference.'))
     args: argparse.Namespace = parser.parse_args()
 
     connector: boto3.session.Session
