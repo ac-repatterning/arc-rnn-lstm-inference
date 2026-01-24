@@ -50,7 +50,7 @@ class Specific:
             _value = int(value)
         except argparse.ArgumentTypeError as err:
             logging.info(('The optional parameter --request expects an integer; '
-                          '0 indicates pre-live latest models, 1 indicates live publication of latest models, '
+                          '0 indicates pre-live models, 1 indicates latest live models, '
                           '2 indicates on-demand inference service, 3 indicates warning period inference.'))
             self.__cache.exc()
             raise err from err
@@ -60,5 +60,5 @@ class Specific:
 
         self.__cache.exc()
         sys.exit(('The optional parameter --request expects an integer; '
-                  '0 indicates pre-live latest models, 1 indicates live publication of latest models, '
+                  '0 indicates pre-live models, 1 indicates latest live models, '
                   '2 indicates on-demand inference service, 3 indicates warning period inference.'))
