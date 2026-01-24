@@ -79,7 +79,7 @@ class Interface:
 
         match arguments.get('request'):
             case 0:
-                arguments['prefix'] = arguments.get('inference').get('inspect')
+                arguments['prefix'] = arguments.get('inference').get('initial')
             case 1:
                 arguments['prefix'] = arguments.get('inference').get('live')
             case 2:
