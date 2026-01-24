@@ -16,11 +16,14 @@ class Data:
     Data
     """
 
-    def __init__(self):
+    def __init__(self, arguments: dict):
         """
 
-        Constructor
+        :param arguments: A set of arguments vis-à-vis computation & storage objectives.<br>
         """
+
+        frequency = 1.0 if arguments.get("frequency") == "h" else float(arguments.get("frequency").removesuffix("h"))
+
 
         # Configurations
         self.__configurations = config.Config()
