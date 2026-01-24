@@ -97,7 +97,7 @@ class Data:
         # Filter
         # or: data = data.copy().iloc[-n_samples_seen_:, :]
         n_samples_seen_ = attribute.scaling.get('n_samples_seen_')
-        data = data.copy().tail(n_samples_seen_)
+        data = data.copy().tail(min(n_samples_seen_, self.__n_samples))
 
         # datetime
         data['date'] = pd.to_datetime(data['timestamp'], unit='ms')
