@@ -22,8 +22,9 @@ class Data:
         :param arguments: A set of arguments vis-à-vis computation & storage objectives.<br>
         """
 
-        frequency = 1.0 if arguments.get("frequency") == "h" else float(arguments.get("frequency").removesuffix("h"))
-
+        frequency = 1.0 if arguments.get('frequency') == "h" else float(arguments.get('frequency').removesuffix("h"))
+        days = arguments.get('prefix').get('n_samples_use_')
+        self.__n_samples = int(days * 24 / frequency)
 
         # Configurations
         self.__configurations = config.Config()
