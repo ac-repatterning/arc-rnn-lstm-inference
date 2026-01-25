@@ -54,9 +54,8 @@ class Interface:
         """
 
         __get_attributes = dask.delayed(src.inference.attributes.Attributes(arguments=self.__arguments).exc)
-        __get_data = dask.delayed(src.inference.data.Data().exc)
-        __approximating = dask.delayed(
-            src.inference.approximating.Approximating().exc)
+        __get_data = dask.delayed(src.inference.data.Data(arguments=self.__arguments).exc)
+        __approximating = dask.delayed(src.inference.approximating.Approximating(arguments=self.__arguments).exc)
         __persist = dask.delayed(src.inference.persist.Persist().exc)
 
         computations = []

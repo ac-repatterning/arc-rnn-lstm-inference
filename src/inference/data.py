@@ -16,11 +16,15 @@ class Data:
     Data
     """
 
-    def __init__(self):
+    def __init__(self, arguments: dict):
         """
 
-        Constructor
+        :param arguments: A set of arguments vis-à-vis computation & storage objectives.<br>
         """
+
+        frequency = 1.0 if arguments.get('frequency') == "h" else float(arguments.get('frequency').removesuffix("h"))
+        days = arguments.get('prefix').get('n_samples_use_')
+        self.__n_samples = int(days * 24 / frequency)
 
         # Configurations
         self.__configurations = config.Config()
@@ -76,8 +80,6 @@ class Data:
 
     def exc(self, specification: sc.Specification, attribute: atr.Attribute) -> pd.DataFrame:
         """
-        __as_from = attribute.modelling.get('training_starts').get('epoch_milliseconds')
-        data = data.copy().loc[data['timestamp'] >= __as_from, :]
 
         :param specification:
         :param attribute:
@@ -91,9 +93,8 @@ class Data:
         data = self.__set_missing(data=data.copy())
 
         # Filter
-        # or: data = data.copy().iloc[-n_samples_seen_:, :]
         n_samples_seen_ = attribute.scaling.get('n_samples_seen_')
-        data = data.copy().tail(n_samples_seen_)
+        data = data.copy().tail(min(n_samples_seen_, self.__n_samples))
 
         # datetime
         data['date'] = pd.to_datetime(data['timestamp'], unit='ms')

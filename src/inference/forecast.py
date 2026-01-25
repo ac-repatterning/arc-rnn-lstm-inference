@@ -14,18 +14,18 @@ class Forecast:
     For forecasting vis-à-vis the future
     """
 
-    def __init__(self, attribute: atr.Attribute):
+    def __init__(self, attribute: atr.Attribute, arguments: dict):
         """
 
-        :param attribute: Refer to src.elements.attribute.py
+        :param attribute: The attributes of a model and its supplements.  Refer to src.elements.attribute.py<br>
+        :param arguments: A set of arguments vis-à-vis computation & storage objectives.<br>
         """
 
-        self.__modelling = attribute.modelling
-        self.__scaling = attribute.scaling
-        self.__n_points_future = attribute.n_points_future
+        self.__attribute = attribute
+        self.__arguments = arguments
 
-        # And
-        self.__n_sequence = self.__modelling.get('n_sequence')
+        # from attribute
+        self.__modelling: dict = attribute.modelling
 
         # Renaming
         self.__rename = { arg: f'e_{arg}' for arg in self.__modelling.get('targets')}
@@ -37,8 +37,10 @@ class Forecast:
         :return:
         """
 
-        dates = pd.date_range(start=frame['date'].max(), periods=self.__n_points_future+1, freq='h', inclusive='right')
-        timestamps = (dates.astype(np.int64) / (10 ** 6)).astype(np.longlong)
+        # Note, the unit of measure of `timestamps` must be milliseconds.
+        dates = pd.date_range(start=frame['date'].max(), periods=self.__attribute.n_points_future + 1,
+                              freq=self.__arguments.get('frequency'), inclusive='right', unit='ms')
+        timestamps = dates.astype(np.int64)
         structure = pd.DataFrame(data={'timestamp': timestamps, 'date': dates})
 
         for i in self.__modelling.get('targets'):
@@ -64,10 +66,10 @@ class Forecast:
 
         # Temporary
         history = initial.copy()
-        for _ in range(self.__n_points_future):
-            value = model(history[:, -self.__n_sequence:, :])
+        for _ in range(self.__attribute.n_points_future):
+            value = model(history[:, -self.__modelling.get('n_sequence'):, :])
             history = np.concatenate((history, [[[float(value.numpy().squeeze())]]]), axis=1)
-        template.loc[:, self.__modelling.get('targets')] = history[:, -self.__n_points_future:, :].squeeze()
+        template.loc[:, self.__modelling.get('targets')] = history[:, -self.__attribute.n_points_future:, :].squeeze()
 
         return template.copy()
 
@@ -79,7 +81,7 @@ class Forecast:
         """
 
         instances = src.inference.scaling.Scaling().inverse_transform(
-            data=data, scaling=self.__scaling)
+            data=data, scaling=self.__attribute.scaling)
         instances = instances.copy().rename(columns=self.__rename)
 
         frame = data.copy()
@@ -102,7 +104,7 @@ class Forecast:
         frame = master.transforms
 
         # Predicting future values requires (a) past values, and (b) a structure for future values
-        past = frame.copy()[-self.__n_sequence:]
+        past = frame.copy()[-self.__modelling.get('n_sequence'):]
         structure = self.__get_structure(frame=frame)
 
         # Forecasting

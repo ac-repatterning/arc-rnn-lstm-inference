@@ -18,11 +18,15 @@ class Approximating:
     Under Development
     """
 
-    def __init__(self):
-        """
-        Constructor
+    def __init__(self, arguments: dict):
         """
 
+        :param arguments: A set of arguments vis-à-vis computation & storage objectives.<br>
+        """
+
+        self.__arguments = arguments
+
+        # configurations
         self.__configurations = config.Config()
 
     def __get_model(self, specification: sc.Specification):
@@ -51,7 +55,7 @@ class Approximating:
 
         estimates: pd.DataFrame = src.inference.estimate.Estimate(attribute=attribute).exc(
             model=model, master=master)
-        forecasts: pd.DataFrame = src.inference.forecast.Forecast(attribute=attribute).exc(
+        forecasts: pd.DataFrame = src.inference.forecast.Forecast(attribute=attribute, arguments=self.__arguments).exc(
             model=model, master=master, specification=specification)
 
         return apr.Approximations(estimates=estimates, forecasts=forecasts)
