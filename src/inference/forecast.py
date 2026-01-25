@@ -39,7 +39,7 @@ class Forecast:
 
         dates = pd.date_range(start=frame['date'].max(), periods=self.__attribute.n_points_future + 1,
                               freq=self.__arguments.get('frequency'), inclusive='right')
-        timestamps = (dates.astype(np.int64) / (10 ** 6)).astype(np.longlong)
+        timestamps = (dates.astype(np.int64) / (10 ** 3)).astype(np.longlong)
         structure = pd.DataFrame(data={'timestamp': timestamps, 'date': dates})
 
         for i in self.__modelling.get('targets'):
