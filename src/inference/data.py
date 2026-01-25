@@ -95,7 +95,6 @@ class Data:
         data = self.__set_missing(data=data.copy())
 
         # Filter
-        # or: data = data.copy().iloc[-n_samples_seen_:, :]
         n_samples_seen_ = attribute.scaling.get('n_samples_seen_')
         data = data.copy().tail(min(n_samples_seen_, self.__n_samples))
 
