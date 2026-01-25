@@ -55,7 +55,7 @@ class Approximating:
 
         estimates: pd.DataFrame = src.inference.estimate.Estimate(attribute=attribute).exc(
             model=model, master=master)
-        forecasts: pd.DataFrame = src.inference.forecast.Forecast(attribute=attribute).exc(
+        forecasts: pd.DataFrame = src.inference.forecast.Forecast(attribute=attribute, arguments=self.__arguments).exc(
             model=model, master=master, specification=specification)
 
         return apr.Approximations(estimates=estimates, forecasts=forecasts)
