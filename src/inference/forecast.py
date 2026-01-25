@@ -37,9 +37,10 @@ class Forecast:
         :return:
         """
 
+        # Note, the unit of measure of `timestamps` must be milliseconds.
         dates = pd.date_range(start=frame['date'].max(), periods=self.__attribute.n_points_future + 1,
-                              freq=self.__arguments.get('frequency'), inclusive='right')
-        timestamps = (dates.astype(np.int64) / (10 ** 3)).astype(np.longlong)
+                              freq=self.__arguments.get('frequency'), inclusive='right', unit='ms')
+        timestamps = dates.astype(np.int64)
         structure = pd.DataFrame(data={'timestamp': timestamps, 'date': dates})
 
         for i in self.__modelling.get('targets'):
