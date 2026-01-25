@@ -63,7 +63,7 @@ class Interface:
         # Add metadata field
         strings = self.__get_metadata(frame=strings.copy())
 
-        # Depending on the request, clear the targetted storage area first
+        # Depending on the request, clear the targeted storage area first
         if self.__arguments.get('request') in {0, 3}:
             src.transfer.cloud.Cloud(
                 service=self.__service, s3_parameters=self.__s3_parameters, arguments=self.__arguments).exc()
