@@ -60,9 +60,6 @@ class Interface:
         :return:
         """
 
-        # Add metadata field
-        strings = self.__get_metadata(frame=strings.copy())
-
         # Depending on the request, clear the targeted storage area first
         if self.__arguments.get('request') in {0, 3}:
             src.transfer.cloud.Cloud(
@@ -88,4 +85,5 @@ class Interface:
         if strings.empty:
             logging.info('There are no inference artefacts to transfer.')
         else:
+            strings = self.__get_metadata(frame=strings.copy())
             self.__transfer(strings=strings)
