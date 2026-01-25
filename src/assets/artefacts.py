@@ -38,7 +38,9 @@ class Artefacts:
         :return:
         """
 
-        origin = f'{self.__arguments.get('prefix').get('source')}/{specification.catchment_id}/{specification.ts_id}'
+        stage = self.__arguments.get('prefix').get('model')
+        origin = (f'{self.__arguments.get('modelling').get('path').get(stage)}/'
+                  f'{specification.catchment_id}/{specification.ts_id}')
         target = os.path.join(
             self.__configurations.data_, 'artefacts', str(specification.catchment_id), str(specification.ts_id))
 
@@ -53,12 +55,6 @@ class Artefacts:
         :param specifications: A list items of type Specification; refer to src.elements.specification.py
         :return:
         """
-
-        # Either
-        # computations = []
-        # for specification in specifications:
-        #     state = self.__acquire(specification=specification)
-        #     computations.append(state)
 
         # Or
         computations = [dask.delayed(self.__acquire)(specification=specification)
