@@ -80,8 +80,6 @@ class Data:
 
     def exc(self, specification: sc.Specification, attribute: atr.Attribute) -> pd.DataFrame:
         """
-        __as_from = attribute.modelling.get('training_starts').get('epoch_milliseconds')
-        data = data.copy().loc[data['timestamp'] >= __as_from, :]
 
         :param specification:
         :param attribute:
