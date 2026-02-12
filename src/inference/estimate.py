@@ -75,8 +75,8 @@ class Estimate:
         :return:
         """
 
-        raw = (instances['measure'] - instances['e_measure']).to_numpy()
-        instances.loc[:, 'ape'] = 100 * np.absolute(np.true_divide(raw, instances['measure'].to_numpy()))
+        raw = (instances['e_measure'] - instances['measure']).to_numpy()
+        instances.loc[:, 'p_error'] = 100 * np.true_divide(raw, instances['measure'].to_numpy())
 
         return instances
 
