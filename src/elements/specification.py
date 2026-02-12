@@ -21,8 +21,6 @@ class Specification(typing.NamedTuple):
         The granularity-label of the time series, e.g., <i>15minute</i>.<br><br>
     <b>starting</b>: str<br>
         The historical starting date & time string of the gauge's series.<br><br>
-    <b>until</b>: str<br>
-        The latest date & time string of the gauge's series.<br><br>
     <b>longitude</b>: float<br>
         The x geographic coördinate.<br><br>
     <b>latitude</b>: float<br>
@@ -40,7 +38,6 @@ class Specification(typing.NamedTuple):
     ts_id: int
     ts_name: str
     starting: str
-    until: str
     latitude: float
     longitude: float
     river_name: str
