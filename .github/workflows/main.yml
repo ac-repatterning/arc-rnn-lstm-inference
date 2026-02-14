@@ -176,12 +176,12 @@ jobs:
           docker push ${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ env.IMAGE_TAG }}
 
       - name: Delete Packages
-        uses: actions/delete-package-versions@e5bc658cc4c965c472efe991f8beea3981499c55 # v5
+        uses: actions/delete-package-versions@v5
         with:
           package-name: ${{ github.event.repository.name }}
           package-type: 'container'
           min-versions-to-keep: 1
-          delete-only-untagged-versions: false
+          delete-only-untagged-versions: true
 
   ecr:
     name: Amazon Elastic Container Registry
